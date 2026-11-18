@@ -39,3 +39,7 @@ A tarefa informa o último commit válido até **02/11/2026 às 09:00**; o fuso 
 [Plano P00–P06 e andamento](planejamento/empresa-produtos.md) · [Ambiente local integrado](planejamento/ambiente-local.md). O estado acima descreve a entrega acadêmica anterior; o plano registra a implementação local atual, ainda sem publicação.
 
 [Progresso atual e ponto de retomada](planejamento/progresso-empresa-produtos.md)
+
+## Cargos e permissões
+
+[LLT-169 — Catálogo de cargos e matriz de permissões](planejamento/LLT-169-catalogo-cargos-matriz-permissoes/README.md). Entrega documental do spike; não representa implementação das permissões.
