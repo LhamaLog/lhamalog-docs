@@ -23,7 +23,7 @@ Core, Web e Docs estão na branch `dev/empresa-produtos`. P00–P04 têm impleme
 
 ## Regras confirmadas
 
-Usuários/gestores podem cadastrar empresas e produtos sem cota do Core. Contextos são opcionais. Preservar acesso por produto e isolamento entre empresas; liberar automaticamente o produto ao criador. Cobrança por milhão de logs lidos fica fora desta entrega. Limites externos de organizações da Clerk não são limites implementados pelo Core.
+Usuários/gestores podem cadastrar empresas e produtos sem cota do Core. Contextos são opcionais (a Descrição funcional do produto passou a ser obrigatória no Web na LLT-178). Preservar acesso por produto e isolamento entre empresas; liberar automaticamente o produto ao criador. Cobrança por milhão de logs lidos fica fora desta entrega. Limites externos de organizações da Clerk não são limites implementados pelo Core.
 
 ## Como continuar
 
