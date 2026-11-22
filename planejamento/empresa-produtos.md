@@ -13,7 +13,7 @@ O fluxo é: tela → requisição HTTP → Core → MongoDB → resposta para a 
 - Cada produto pertence a uma empresa. O Core determina essa empresa pela sessão validada, não por um identificador livre enviado pelo formulário.
 - Administradores/donos com papel devidamente mapeado acessam todos os produtos da empresa. Os demais membros acessam apenas os produtos liberados.
 - Quem cadastra um produto recebe acesso automaticamente.
-- Contextos são opcionais: avisar quando incompletos e permitir salvar.
+- Contextos são opcionais: avisar quando incompletos e permitir salvar. Exceção da tela: a Descrição funcional do contexto do produto é obrigatória no Web desde a LLT-178 (o Core continua aceitando vazio).
 - Login/logout existentes devem ser preservados.
 - Exclusão de empresas/produtos e gestão de permissões de outros membros não estão autorizadas neste escopo.
 
@@ -48,9 +48,9 @@ P05 pode começar após P00 para facilitar os testes das demais partes. A ordem 
 - Empresa: razão social, nome fantasia, documento, data de inscrição, porte e endereço.
 - Contexto da empresa: setor, missão, público-alvo, diferenciais e idioma.
 - Produto: nome, descrição, categoria e versão.
-- Contexto do produto: problema resolvido, público-alvo, diferenciais, palavras-chave e restrições.
+- Contexto do produto: descrição funcional, personalidade, idioma da resposta, arquitetura, escopo e dados sensíveis (campos da tela "Contexto para IA", substituídos na LLT-178; detalhes em [LLT-178-contexto-produto](LLT-178-contexto-produto/README.md)).
 
-Nome do produto é obrigatório. Os contextos são opcionais. Validações adicionais devem vir das fontes ou de uma decisão explícita, não apenas do desenho da tela.
+Nome do produto é obrigatório. Os contextos são opcionais, exceto a Descrição funcional do produto no Web (LLT-178). Validações adicionais devem vir das fontes ou de uma decisão explícita, não apenas do desenho da tela.
 
 **Pronto quando:** é possível descrever o que a tela envia, o que a API devolve e quem pode executar cada operação, sem dúvidas de negócio bloqueantes.
 
