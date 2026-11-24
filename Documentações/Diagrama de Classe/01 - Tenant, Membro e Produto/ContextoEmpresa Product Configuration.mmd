@@ -1,0 +1,142 @@
+%% DC-10 - módulo 1: Tenant, Membro e Produto (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 1. Para gerar o SVG: mmdc -i "ContextoEmpresa Product Configuration.mmd" -o "ContextoEmpresa Product Configuration.svg"
+classDiagram
+    direction LR
+    class Tenant {
+        <<sem aba>>
+        -string tenantId
+        -string clerkOrgId
+        -string nome
+        -string status
+    }
+    class Membro {
+        <<sem aba>>
+        -string membroId
+        -string tenantId
+        -string clerkUserId
+        -string papel
+        -string status
+    }
+    class AcessoProduto {
+        <<sem aba>>
+        -string membroId
+        -string produtoId
+    }
+    class Produto {
+        -uuid product_id
+        -tenantId
+        -Empresa empresa
+        -string nome
+        -string Descricao
+        -categoria
+        -string versao
+        -status
+        -ContextoProduto contexto_produto
+        -ConfiguracaoProduto configuracao_produto
+        -datetime dataCadastro
+        +ativar() void
+        +suspender() void
+        +estaConfigurado() boolean
+    }
+    class ContextoProduto {
+        -uuid contexto_produto_id
+        -Produto produto
+        -string problema_resolvido
+        -string publico_alvo
+        -string diferenciais
+        -string palavras_chave
+        -string restricoes
+        +EstaCompleto() bool
+        +CombinarComContextoEmpresa(ContextoEmpresa contexto) string
+        +AtualizarContexto() void
+    }
+    class ConfiguracaoProduto {
+        -uuid configuracao_id
+        -Produto produto
+        -string chave
+        -string valor
+        -bool obrigatoria
+        -datetime data_atualizacao
+        +EstaPreenchida() bool
+        +ValidarValor() bool
+        +AtualizarValor(string novo_valor) bool
+        +ObterValorExibicao() string
+    }
+    class ContextoEmpresa {
+        -id
+        -Empresa empresa
+        -setorAtuacao
+        -missao
+        -publicoAlvo
+        -diferenciais
+        -idioma
+        +gerarPrompt() string
+        -toJson() string
+        -fromJson(string json)
+        -estaCompleto() boolean
+    }
+    class Empresa {
+        -emprise_id
+        -razao_social
+        -document
+        -nome_fantasia
+        -data_inscricao
+        -ContextoEmpresa contexto_empresa
+        -Endereco endereco
+        -porte
+        -FormatarCnpj()
+        +CadastrarEmpresa()
+    }
+    class Endereco {
+        -uuid endereco_id
+        -Empresa empresa
+        -TipoEndereco tipo
+        -string logradouro
+        -string numero
+        -string complemento
+        -string bairro
+        -string cidade
+        -string estado
+        -string pais
+        -string cep
+        -string principal
+        +FormatarEnderecoCompleto() string
+        +ValidarEndereco() bool
+        +DefinirComoPrincipal() void
+        +EhInternacional() bool
+    }
+    class TipoEndereco {
+        <<enumeration>>
+        SEDE
+        FILIAL
+        COBRANCA
+    }
+    class Usuario {
+        <<substituida>>
+    }
+    class Gestor {
+        <<substituida>>
+    }
+    class Vinculo {
+        <<substituida>>
+    }
+    class Acesso {
+        <<substituida>>
+    }
+
+    Tenant "1" -- "0..*" Membro : membros
+    Tenant "1" -- "0..*" Produto : produtos
+    Membro "1" -- "0..*" AcessoProduto : recebe
+    Produto "1" -- "0..*" AcessoProduto : libera
+    Produto -- ContextoProduto
+    Produto "1" -- "0..*" ConfiguracaoProduto : configura
+    ContextoProduto ..> ContextoEmpresa : CombinarComContextoEmpresa
+    Empresa -- ContextoEmpresa
+    Empresa "1" -- "0..*" Endereco : possui
+    Endereco --> TipoEndereco
+    Produto --> Empresa : empresa
+    Tenant "1" -- "1" Empresa : cadastro
+    Usuario ..> Membro : substituida por
+    Gestor ..> Membro : substituida por
+    Vinculo ..> Membro : substituida por
+    Acesso ..> Membro : substituida por

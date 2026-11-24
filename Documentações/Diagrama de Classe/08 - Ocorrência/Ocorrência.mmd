@@ -1,0 +1,81 @@
+%% DC-10 - módulo 8: Ocorrência (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 8. Para gerar o SVG: mmdc -i "Ocorrência.mmd" -o "Ocorrência.svg"
+classDiagram
+    direction LR
+    class ModuloOcorrencia {
+        +registrar(Ocorrencia ocorrencia) bool
+        +existsByChave(String chave_idempotencia) bool
+        +receberResumo(ResumoAnalise resumo) bool
+        +dispararSugestaoAutomatica(Ocorrencia ocorrencia) Sugestao
+    }
+    class ResumoArquivo {
+        -uuid arquivoId
+        -uuid varreduraId
+        -Integer registrosProcessados
+        -Integer achadosIdentificados
+        -Integer spamIdentificados
+        -Integer dadosSensiveisIdentificados
+        -List~uuid~ ocorrenciaIds
+        -String StatusProcessamento
+        -String chaveIdempotencia
+        -Integer recorrentesIdentificados
+    }
+    class Ocorrencia {
+        <<sem aba>>
+        -id
+        -arquivoId
+        -tenantId
+        -tipo
+        -gravidade
+        -linha
+        -titulo
+        -resumo
+        -conteudo
+        -traceId
+        -correlationId
+        -hostName
+        -moduloId
+        -camposExtraidos
+        -dadosSensiveis
+        -status
+    }
+    class Mapper {
+        <<sem aba>>
+        +converter(AchadoAnalise achado) Ocorrencia
+    }
+    class ResumoAnalise {
+        <<Finder>>
+    }
+    class AchadoAnalise {
+        <<Finder>>
+    }
+    class Arquivo {
+        <<Coletor>>
+    }
+    class ProdutoRecursoIA {
+        <<AssinaturaPagamento>>
+    }
+    class Sugestao {
+        <<Sugestao>>
+    }
+    class ModuloSugestao {
+        <<Sugestao>>
+    }
+    class Notificacao {
+        <<Notificacao>>
+    }
+
+    ModuloOcorrencia ..> ResumoAnalise : receberResumo
+    ModuloOcorrencia --> Mapper : converte os achados
+    Mapper ..> AchadoAnalise : converter
+    Mapper ..> Ocorrencia : cria
+    ModuloOcorrencia ..> Ocorrencia : registrar
+    ModuloOcorrencia ..> ResumoArquivo : grava
+    ModuloOcorrencia ..> ProdutoRecursoIA : consulta o plano
+    ModuloOcorrencia ..> ModuloSugestao : dispararSugestaoAutomatica
+    ModuloOcorrencia ..> Sugestao : recebe a gerada (ADR_036)
+    ModuloOcorrencia ..> Notificacao : envia Ocorrencia e Sugestao
+    Arquivo "1" -- "0..1" ResumoArquivo : resumo
+    ResumoArquivo "1" -- "0..*" Ocorrencia : ocorrenciaIds
+    Ocorrencia --> Arquivo : arquivoId
+    Ocorrencia "1" -- "0..*" Sugestao

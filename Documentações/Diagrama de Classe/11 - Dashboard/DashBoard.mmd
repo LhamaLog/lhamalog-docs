@@ -1,0 +1,110 @@
+%% DC-10 - módulo 11: Dashboard (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 11. Para gerar o SVG: mmdc -i "DashBoard.mmd" -o "DashBoard.svg"
+classDiagram
+    direction LR
+    class Metrica {
+        -String nome
+        -Number valor
+        -String tipo
+        -String unidade
+        +atualizarValor(Number valor) void
+        +zerar() void
+    }
+    class Periodo {
+        -DateTime inicio
+        -DateTime fim
+        -DateTime timezone
+        +estaValido() boolean
+        +contem(DateTime data) boolean
+    }
+    class FiltroDashboard {
+        -Produto produto
+        -Periodo periodo
+        -String tipoAlerta
+        -List~Metrica~ metricasSelecionadas
+        +validar() boolean
+        +aplicar() void
+        +limpar() void
+    }
+    class DashboardProduto {
+        -Produto produto
+        -FiltroDashboard filtro
+        -DateTime ultimaAtualizacao
+        +carregarMetricas() void
+        +aplicarFiltro(FiltroDashboard filtro) void
+        +atualizar() void
+        +obterMetricas() List~Metrica~
+    }
+    class DashboardEmpresarial {
+        -Empresa empresa
+        -List~Produto~ produtosAutorizados
+        -List~Metrica~ metricasAgregadas
+        -FiltroDashboard filtro
+        -DateTime ultimaAtualizacao
+        +carregarDados() void
+        +aplicarFiltro(FiltroDashboard filtro) void
+        +atualizar() void
+        +obterMetricasAgregadas() List~Metrica~
+        +selecionarProduto(Produto produto) DashboardProduto
+    }
+    class FiltroOcorrenciaEmpresarial {
+        -List~Produto~ produtos
+        -Periodo periodo
+        -tipoOcorrencia
+        -String status
+        -String termoBusca
+        +validar() boolean
+        +aplicar() void
+        +limpar() void
+        +adicionarProduto(Produto produto) void
+        +removerProduto(Produto produto) void
+    }
+    class ResumoDashboardMobile {
+        -Produto produto
+        -List~Metrica~ metricasPrincipais
+        -Periodo periodo
+        -DateTime ultimaAtualizacao
+        +carregarResumo() void
+        +atualizar() void
+        +obterMetricasPrincipais() List~Metrica~
+    }
+    class Agregacao {
+        -String tipo
+        -List~Metrica~ metricas
+        -Periodo periodo
+        -Number resultado
+        -String formula
+        +calcular() Number
+        +adicionarMetrica(Metrica metrica) void
+        +removerMetrica(Metrica metrica) void
+        +zerar() void
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+    class Empresa {
+        <<TenantMembroProduto>>
+    }
+    class Ocorrencia {
+        <<Ocorrencia>>
+    }
+
+    DashboardProduto --> FiltroDashboard : filtro
+    DashboardProduto ..> Metrica : obterMetricas
+    DashboardEmpresarial --> FiltroDashboard : filtro
+    DashboardEmpresarial o-- Metrica : metricasAgregadas
+    DashboardEmpresarial ..> DashboardProduto : selecionarProduto
+    FiltroDashboard --> Periodo
+    FiltroDashboard o-- Metrica : metricasSelecionadas
+    FiltroOcorrenciaEmpresarial --> Periodo
+    FiltroOcorrenciaEmpresarial ..> Ocorrencia : consulta
+    ResumoDashboardMobile --> Periodo
+    ResumoDashboardMobile o-- Metrica : metricasPrincipais
+    Agregacao --> Periodo
+    Agregacao o-- Metrica : metricas
+    DashboardProduto --> Produto
+    DashboardEmpresarial --> Empresa
+    DashboardEmpresarial --> "0..*" Produto : produtosAutorizados
+    FiltroDashboard --> Produto
+    FiltroOcorrenciaEmpresarial --> "0..*" Produto : produtos
+    ResumoDashboardMobile --> Produto

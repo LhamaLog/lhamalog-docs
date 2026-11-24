@@ -1,0 +1,22 @@
+{
+ "docs": 239870,
+ "raw_bytes": 32380200,
+ "logs-dynamic": {
+  "count": 239870,
+  "store_bytes": 79195042,
+  "ratio_vs_raw": 2.445786066793905,
+  "bytes_per_doc": 330.1581773460625
+ },
+ "logs-opt": {
+  "count": 239870,
+  "store_bytes": 43423604,
+  "ratio_vs_raw": 1.3410542244952162,
+  "bytes_per_doc": 181.0297411097678
+ },
+ "logs-logsdb": {
+  "count": 239870,
+  "store_bytes": 59804978,
+  "ratio_vs_raw": 1.8469613529255533,
+  "bytes_per_doc": 249.32245799808229
+ }
+}

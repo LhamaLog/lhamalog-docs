@@ -1,0 +1,153 @@
+%% DC-10 - módulo 7: Finder (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 7. Para gerar o SVG: mmdc -i "Finder.mmd" -o "Finder.svg"
+classDiagram
+    direction LR
+    class Finder {
+        -Arquivo Arquivo
+        -MotorAnalise MotorAnalise
+        -ClassificadorAnalise ClassificadorAnalise
+        -ScannerSeguranca ScannerSeguranca
+        -FilaOrdenada FilaOrdenada
+        -ArquivoVarredura ArquivoVarredura
+        +processar() ResumoAnalise
+        -montarContexto() ContextoAnalise
+        -analisarRegistro() List~ClassificadorAnalise~
+        -removerLinhasDuplicadas(List~String~ linhas) List~String~
+        -recarregarPorCorrelationId(String correlationId) List~String~
+    }
+    class ContextoAnalise {
+        -uuid empresaId
+        -uuid produtoId
+        -uuid arquivoId
+        -uuid varreduraId
+        -Boolean varreduraAvancada
+        +permiteVarreduraAvancada() Boolean
+        +pertenceAoProduto() Boolean
+        +pertenceAEmpresa() Boolean
+    }
+    class LogNormalizado {
+        -Integer numeroLinha
+        -Date createAt
+        -String conteudo
+        -ContextoAnalise contextoAnalise
+        -Map~String,Object~ campos
+        +obterCampo() Object
+        +adicionarCampo() void
+    }
+    class MotorAnalise {
+        -LogNormalizado logNormalizado
+        -GatewayLLMFinder gatewayLLM
+        -BancoVetorial bancoVetorial
+        -Integer timeoutMs
+        +Analisar() List~AchadoAnalise~
+        +interpretarResposta() ClassificadorAnalise
+        +executarAI() void
+        +verificarRecorrencia(AchadoAnalise achado) Boolean
+    }
+    class GatewayLLMFinder {
+        <<interface>>
+        +executarAI()
+    }
+    class BancoVetorial {
+        <<interface>>
+        +searchSimilar(String log, uuid owner_id) List~uuid~
+        +store(String log, uuid owner_id, uuid ocorrencia_id)
+    }
+    class RecorrenciaLog {
+        -uuid id
+        -uuid owner_id
+        -string log_signature
+        -string host_name
+        -uuid last_arquivo_id
+        -int consecutive_count
+        -timestamp first_seen_at
+        -timestamp last_seen_at
+        +register(uuid arquivo_id) int
+        +isRecorrente(int limite) bool
+    }
+    class AchadoAnalise {
+        <<DTO>>
+        -String titulo
+        -String resumo
+        -Integer numeroLinha
+        -Map~String,String~ camposExtraido
+        -Boolean dadosSensiveis
+        -String traceId
+        -String correlationId
+        -String hostName
+        -uuid moduloId
+        -List~String~ linhas
+        -Tipo tipo
+        -Boolean recorrente
+    }
+    class ResumoAnalise {
+        <<sem aba>>
+        contadores
+        List~AchadoAnalise~
+    }
+    class ClassificadorAnalise {
+        -AchadoAnalise achadoAnalise
+        -Tipo classificado
+        +classificarAnalise() void
+        +geraOcorrencia() Boolean
+    }
+    class Tipo {
+        <<enumeration>>
+        ERRO
+        WARNING
+        SPAM
+    }
+    class ScannerSeguranca {
+        -Boolean habilitado
+        -Nivel nivel
+        -String mascara
+        +validarSeguranca() void
+    }
+    class Nivel {
+        <<enumeration>>
+        BASICO
+        MEDIO
+        AVANCADO
+    }
+    class FilaOrdenada {
+        <<Varredura>>
+    }
+    class ArquivoVarredura {
+        <<Varredura>>
+    }
+    class Modulo {
+        <<Varredura>>
+    }
+    class Arquivo {
+        <<Coletor>>
+    }
+    class Trace {
+        <<Coletor>>
+    }
+    class ModuloOcorrencia {
+        <<Ocorrencia>>
+    }
+
+    Finder --> FilaOrdenada
+    Finder --> ArquivoVarredura
+    Finder --> Arquivo
+    Finder ..> ContextoAnalise : montarContexto
+    Finder --> ScannerSeguranca
+    Finder --> MotorAnalise
+    Finder --> ClassificadorAnalise
+    Finder ..> ResumoAnalise : agrupa os AchadoAnalise
+    Finder ..> ModuloOcorrencia : envia o ResumoAnalise
+    MotorAnalise --> LogNormalizado
+    MotorAnalise --> GatewayLLMFinder : executarAI
+    MotorAnalise --> BancoVetorial : verificarRecorrencia
+    MotorAnalise ..> RecorrenciaLog : verificarRecorrencia
+    MotorAnalise ..> AchadoAnalise : Analisar
+    MotorAnalise ..> ClassificadorAnalise : interpretarResposta
+    ResumoAnalise o-- AchadoAnalise
+    LogNormalizado --> ContextoAnalise
+    ClassificadorAnalise --> AchadoAnalise
+    ClassificadorAnalise --> Tipo : classificado
+    AchadoAnalise --> Tipo
+    AchadoAnalise "0..*" --> "1" Trace : traceId
+    Modulo "0..1" -- "0..*" AchadoAnalise : afeta
+    ScannerSeguranca --> Nivel

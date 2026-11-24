@@ -1,0 +1,206 @@
+%% DC-10 - módulo 3: Assinatura e Pagamento (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 3. Para gerar o SVG: mmdc -i "Assinatura e Pagamento.mmd" -o "Assinatura e Pagamento.svg"
+classDiagram
+    direction LR
+    class GerenciadorAssinatura {
+        +listarPlanosDisponiveis() List~Plano~
+        +contratarPlano(UUID empresa_id, Plano plano) Assinatura
+        +contratarPlano(String tenantId, Plano plano) Assinatura
+        +alterarAssinatura(String assinaturaId, Plano novoPlano) Assinatura
+        +cancelarAssinatura(String assinaturaId, Boolean imediato) void
+        +solicitarReembolso(String pagamentoId, String motivo) Reembolso
+        +aplicarEventoDeAssinatura(String assinaturaId, TipoOperacaoGateway tipoOperacao, EventoGateway evento) void
+        +verificarInadimplencia(UUID empresa_id) Boolean
+        +verificarInadimplencia(String tenantId) Boolean
+        -calcularValorProporcional(UUID empresa_id) Decimal
+        -calcularValorProporcional(String tenantId) Decimal
+        -validarTransicaoDeStatus(StatusAssinatura atual, StatusAssinatura novo) Boolean
+    }
+    class Plano {
+        -uuid plano_id
+        -TipoPlano nome
+        -String volumeArmazenamento
+        -Integer diasRetencao
+        -List~RecursoAnaliseIA~ recursosHabilitados
+        -TipoDashboard dashboard
+        -String moeda
+        -Decimal valor
+        -Periodicidade periodicidade
+    }
+    class TipoPlano {
+        <<enumeration>>
+        FREE
+        STARTER
+        PRO
+        BUSINESS
+        ENTERPRISE
+    }
+    class RecursosAnaliseIA {
+        <<enumeration>>
+        NENHUMA
+        DETECCAO_ANOMALIAS
+        INVESTIGACAO_AUTOMATICA
+        RASTREIO_USUARIO
+        SUGESTAO
+    }
+    class TipoDashboard {
+        <<enumeration>>
+        BASICO
+        PADRAO
+        PERSONALIZADO
+    }
+    class Periodicidade {
+        <<enumeration>>
+        MENSAL
+        ANUAL
+    }
+    class TabelaPrecificacao {
+        <<sem aba>>
+        -string plano
+        -string volumeIngestao
+        -string nivelInterpretacao
+        -int retencaoDias
+        -string extraDashboard
+        -string rateLimit
+        -number precoMensal
+        -int limiteProdutos
+        -int limiteMembros
+        -number creditosIA
+        -number custoAddOnClerk
+        -number margemAddOn
+        -number precoAddOn
+    }
+    class Assinatura {
+        -String tenantId
+        -String planoId
+        -StatusAssinatura status
+        -limites
+        -Date dataInicioVigencia
+        -Date vigenciaAte
+        -Date cancelamentoAgendadoPara
+        -Integer diasCarencia
+        -String criterioElegibilidadeReembolso
+    }
+    class StatusAssinatura {
+        <<enumeration>>
+    }
+    class ProdutoRecursoIA {
+        <<sem aba>>
+        -boolean planoTemIA
+        -boolean produtoAtivouIA
+    }
+    class ProcessamentoPagamento {
+        +processarPagamento(String assinaturaId, Decimal valor) Pagamento
+        +receberEventoGateway(EventoGateway evento) void
+        +validarDadosEvento(EventoGateway evento) Boolean
+        +reprocessarPagamentoFalho(String pagamentoId) StatusPagamento
+        -validarAutenticidadeEvento(EventoGateway evento) Boolean
+    }
+    class GatewayPagamento {
+        <<interface>>
+        +enviarCobranca(Object dados) EventoGateway
+        +consultarStatus(String referenciaExterna) StatusPagamento
+        +solicitarReembolsoExterno(String referenciaExterna, Decimal valor) EventoGateway
+        +validarAutenticidade(EventoGateway evento) Boolean
+    }
+    class ApiPagamento {
+        -String baseUrl
+        -String apiKey
+        -String webhookSecret
+        -String gatewayAtivo
+        -Integer timeoutSegundos
+        +enviarCobranca(Object dados) EventoGateway
+        +consultarStatus(String referenciaExterna) StatusPagamento
+        +solicitarReembolsoExterno(String referenciaExterna, Decimal valor) EventoGateway
+        +validarAutenticidade(EventoGateway evento) Boolean
+    }
+    class Pagamento {
+        -String assinaturaId
+        -StatusPagamento status
+        -Decimal valor
+        -DateTime dataProcessamento
+        -String referenciaGatewayExterno
+        -String chaveIdempotencia
+    }
+    class StatusPagamento {
+        <<enumeration>>
+        PENDENTE
+        PAGO
+        RECUSADO
+        ESTORNADO
+    }
+    class Reembolso {
+        -String pagamentoId
+        -String motivo
+        -StatusReembolso status
+        -DateTime dataSolicitacao
+    }
+    class StatusReembolso {
+        <<enumeration>>
+        SOLICITADO
+        APROVADO
+        NEGADO
+        CONCLUIDO
+    }
+    class EventoGateway {
+        -String payloadBruto
+        -String origemGateway
+        -DateTime recebidoEm
+        -TipoOperacaoGateway tipoOperacao
+        -ResultadoEventoGateway resultado
+        -String motivoFalha
+        -Boolean processado
+        -status
+        -erro
+    }
+    class TipoOperacaoGateway {
+        <<enumeration>>
+        PRIMEIRA_COMPRA
+        ATRASO
+        CANCELAMENTO
+        UPGRADE_DOWNGRADE
+    }
+    class ResultadoEventoGateway {
+        <<enumeration>>
+        SUCESSO
+        FALHA
+    }
+    class Tenant {
+        <<TenantMembroProduto>>
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+
+    GerenciadorAssinatura ..> Plano : listarPlanosDisponiveis
+    GerenciadorAssinatura ..> Assinatura : contrata / altera / cancela
+    GerenciadorAssinatura ..> Reembolso : solicitarReembolso
+    GerenciadorAssinatura ..> EventoGateway : aplicarEventoDeAssinatura
+    GerenciadorAssinatura --> ProcessamentoPagamento : orquestra
+    ProcessamentoPagamento ..> Pagamento : processarPagamento
+    ProcessamentoPagamento ..> EventoGateway : receberEventoGateway
+    GatewayPagamento ..> EventoGateway
+    GatewayPagamento ..> StatusPagamento : consultarStatus
+    ApiPagamento ..> EventoGateway : enviarCobranca / solicitarReembolsoExterno / validarAutenticidade
+    ApiPagamento ..> StatusPagamento : consultarStatus
+    GerenciadorAssinatura ..> StatusAssinatura : validarTransicaoDeStatus
+    GerenciadorAssinatura ..> TipoOperacaoGateway : aplicarEventoDeAssinatura
+    ProcessamentoPagamento ..> StatusPagamento : reprocessarPagamentoFalho
+    Tenant "1" -- "1" Assinatura : possui
+    Tenant "1" -- "0..*" EventoGateway : eventos
+    Plano "1" -- "0..*" Assinatura : plano
+    TabelaPrecificacao "1" -- "0..*" Assinatura : preco
+    ProdutoRecursoIA -- Produto : relaciona
+    ProdutoRecursoIA -- Plano : relaciona
+    Assinatura "1" -- "0..*" Pagamento : cobrancas
+    Pagamento "1" -- "0..*" Reembolso : reembolso
+    Reembolso "0..1" -- "0..*" EventoGateway : eventos
+    Plano --> TipoPlano
+    Plano --> RecursosAnaliseIA
+    Plano --> TipoDashboard
+    Plano --> Periodicidade
+    Assinatura --> StatusAssinatura
+    Pagamento --> StatusPagamento
+    Reembolso --> StatusReembolso
+    EventoGateway --> TipoOperacaoGateway
+    EventoGateway --> ResultadoEventoGateway

@@ -1,0 +1,343 @@
+﻿Requisito,Título do requisito,Cobertura,ID,Classe,Módulo,Ligação,Situação da classe,ADRs,Pendências da classe,O que a classe faz
+USID_001,Visualizar Ocorrências Processados,Parcial,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,,,,,,,,
+USID_002,Consultar Ocorrência,Parcial,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,,,,,,,,
+USID_003,Marcar Ocorrência,Parcial,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,,,,,,,,
+USID_004,Arquivar Ocorrência,Parcial,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,,,,,,,,
+USID_005,Filtrar Ocorrência,Parcial,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,,,,,,,,
+USID_006,Importar Arquivo,Coberto,CL-033,Coletor,§5 Coletor,inferida,Confirmado,"ADR_007, ADR_015",,"Recebe a ingestão e coordena validação, lote e envio à fila."
+,,,CL-039,Arquivo,§5 Coletor,direta,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,CL-055,LogNormalizado,§7 Finder,inferida,Confirmado,ADR_016,,"Formato universal dos logs para o Finder (TXT, LOG, JSON, CSV)."
+,,,,,,,,,,
+USID_007,Consultar Arquivos Processados,Coberto,CL-039,Arquivo,§5 Coletor,direta,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,CL-046,ArquivoVarredura,§6 Varredura,direta,Conflito,"ADR_014, ADR_099","CP-55, CP-120","Controle de um Arquivo dentro de uma Varredura (ordem, status, tentativas, erro)."
+,,,CL-065,ResumoArquivo,§8 Ocorrência,direta,Proposto,"ADR_019, ADR_035, ADR_040 +3",,Resumo por Arquivo: contadores e ids das Ocorrências do Arquivo.
+,,,ES-16,ArquivoScanStatus,§6 Varredura,direta,Pendente,"ADR_014, ADR_046, ADR_049 +2","CP-54, CP-55",
+,,,,,,,,,,
+USID_008,Configurar Periodo de Retenção de Arquivos,Parcial,CL-018,Plano,§3 Assinatura e Pagamento,direta,Conflito,"ADR_030, ADR_036","CP-20, CP-23, CP-33, CP-34 +1","Catálogo de planos: nome, armazenamento, retenção, recursos de IA, dashboard e preço."
+,,,CL-039,Arquivo,§5 Coletor,inferida,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,,,,,,,,
+USID_009,Receber Notificação Email,Coberto,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-077,PreferenciaNotificacao,§10 Notificação,direta,Conflito,"ADR_134, ADR_159","CP-97, CP-126",Canais habilitados por usuário e dados de contato.
+,,,CL-080,EnviadorEmail,§10 Notificação,direta,Confirmado,,,Envio por e-mail.
+,,,CL-084,TentativaEntrega,§10 Notificação,direta,Confirmado,,"CP-98, CP-99","Uma tentativa de entrega da notificação (status, data, motivo da falha)."
+,,,ES-22,CanalNotificacao,§10 Notificação,direta,Confirmado,,,
+,,,ES-24,StatusEnvioNotificacao,§10 Notificação,direta,Pendente,,"CP-98, CP-100",
+,,,,,,,,,,
+USID_010,Receber Notificação Push,Coberto,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-077,PreferenciaNotificacao,§10 Notificação,direta,Conflito,"ADR_134, ADR_159","CP-97, CP-126",Canais habilitados por usuário e dados de contato.
+,,,CL-081,EnviadorPush,§10 Notificação,direta,Confirmado,ADR_025,,Envio push pelo token do dispositivo.
+,,,CL-083,DispositivoPush,§10 Notificação,direta,Confirmado,ADR_025,,Token de push e plataforma do dispositivo do usuário.
+,,,CL-084,TentativaEntrega,§10 Notificação,direta,Confirmado,,"CP-98, CP-99","Uma tentativa de entrega da notificação (status, data, motivo da falha)."
+,,,ES-22,CanalNotificacao,§10 Notificação,direta,Confirmado,,,
+,,,ES-23,PlataformaDispositivo,§10 Notificação,direta,Confirmado,ADR_025,,
+,,,ES-24,StatusEnvioNotificacao,§10 Notificação,direta,Pendente,,"CP-98, CP-100",
+,,,,,,,,,,
+USID_011,Receber Notificação Web,Coberto,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-077,PreferenciaNotificacao,§10 Notificação,direta,Conflito,"ADR_134, ADR_159","CP-97, CP-126",Canais habilitados por usuário e dados de contato.
+,,,CL-082,EnviadorWeb,§10 Notificação,direta,Conflito,ADR_141,CP-94,Envio web em tempo real (WebSocket).
+,,,CL-084,TentativaEntrega,§10 Notificação,direta,Confirmado,,"CP-98, CP-99","Uma tentativa de entrega da notificação (status, data, motivo da falha)."
+,,,ES-22,CanalNotificacao,§10 Notificação,direta,Confirmado,,,
+,,,ES-24,StatusEnvioNotificacao,§10 Notificação,direta,Pendente,,"CP-98, CP-100",
+,,,,,,,,,,
+USID_012,Configurar recepção de notificação,Coberto,CL-014,PapelNotificacao,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_130, ADR_131, ADR_132 +10",,Papel de notificação do Tenant: define quem recebe quais alertas.
+,,,CL-015,PapelSeveridade,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_134, ADR_142",,Gravidades que um papel de notificação recebe.
+,,,CL-016,PapelTipoAlerta,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_134, ADR_142",,Tipos de alerta que um papel de notificação recebe.
+,,,CL-077,PreferenciaNotificacao,§10 Notificação,direta,Conflito,"ADR_134, ADR_159","CP-97, CP-126",Canais habilitados por usuário e dados de contato.
+,,,ES-22,CanalNotificacao,§10 Notificação,direta,Confirmado,,,
+,,,,,,,,,,
+USID_013,Visualizar Notificação,Parcial,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-082,EnviadorWeb,§10 Notificação,direta,Conflito,ADR_141,CP-94,Envio web em tempo real (WebSocket).
+,,,,,,,,,,
+USID_014,Visualizar Notificação (Mobile),Coberto,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-081,EnviadorPush,§10 Notificação,direta,Confirmado,ADR_025,,Envio push pelo token do dispositivo.
+,,,,,,,,,,
+USID_015,Implementar SDK,Parcial,CL-004,Produto,"§1 Tenant, Membro e Produto",direta,Pendente,"ADR_030, ADR_122, ADR_129",CP-03,Cadastro dos sistemas (Produtos) de cada empresa.
+,,,CL-099,LogSDK,§13 Legado,direta,Legado,ADR_007,,Fachada pública da SDK Java.
+,,,CL-100,ConfiguracaoSdk,§13 Legado,direta,Legado,ADR_007,,Configurações para inicializar a SDK em um Produto.
+,,,CL-102,IdentificadorProduto,§13 Legado,direta,Legado,ADR_007,,Objeto de valor que identifica o Produto monitorado na SDK.
+,,,CL-105,ClienteColetor,§13 Legado,direta,Legado,ADR_007,,Contrato da SDK para transmitir logs e testar a conexão com o Coletor.
+,,,CL-114,FonteTelemetria,§13 Legado,inferida,Legado,,CP-113,Fonte de telemetria OpenTelemetry que substitui o Executável.
+,,,,,,,,,,
+USID_016,Gerenciar Tokens,Coberto,CL-004,Produto,"§1 Tenant, Membro e Produto",direta,Pendente,"ADR_030, ADR_122, ADR_129",CP-03,Cadastro dos sistemas (Produtos) de cada empresa.
+,,,CL-034,GerenciadorRequisicao,§5 Coletor,direta,Proposto,"ADR_113, ADR_117, ADR_155",,"A requisição que chega ao Coletor, com o token Bearer do Produtor (TokenApi)."
+,,,CL-041,Produtor,§5 Coletor,direta,Pendente,"ADR_106, ADR_107, ADR_109 +3",CP-37,Máquina de um Produto que envia telemetria ao Coletor.
+,,,CL-042,TokenApi,§5 Coletor,direta,Proposto,"ADR_106, ADR_107, ADR_109 +4",CP-37,"Token Bearer do Produtor: cifrado (AES-256-GCM), com índice SHA-256 para a busca."
+,,,CL-043,CredencialIngestao,§5 Coletor,direta,Substituída,"ADR_025, ADR_028, ADR_111 +2",,Tabela de credencial do servidor; substituída pelo TokenApi.
+,,,CL-101,CredencialIngestao (SDK),§13 Legado,direta,Legado,ADR_007,CP-113,Token usado pela SDK para autenticar o Produto.
+,,,CL-114,FonteTelemetria,§13 Legado,inferida,Legado,,CP-113,Fonte de telemetria OpenTelemetry que substitui o Executável.
+,,,,,,,,,,
+USID_017,Baixar SDK,Só legado,CL-099,LogSDK,§13 Legado,direta,Legado,ADR_007,,Fachada pública da SDK Java.
+,,,,,,,,,,
+USID_018,Baixar Executavel,Só legado,CL-113,Executavel,§13 Legado,direta,Substituída,"ADR_007, ADR_111",CP-113,Agente instalado que monitora uma pasta e envia arquivos (modelo antigo).
+,,,ES-26,SistemaOperacional,§13 Legado,direta,Legado,ADR_007,,
+,,,,,,,,,,
+USID_019,Configurar Executavel,Só legado,CL-113,Executavel,§13 Legado,direta,Substituída,"ADR_007, ADR_111",CP-113,Agente instalado que monitora uma pasta e envia arquivos (modelo antigo).
+,,,ES-27,StatusExecutavel,§13 Legado,direta,Legado,ADR_007,,
+,,,,,,,,,,
+USID_020,Iniciar Execução,Só legado,CL-113,Executavel,§13 Legado,direta,Substituída,"ADR_007, ADR_111",CP-113,Agente instalado que monitora uma pasta e envia arquivos (modelo antigo).
+,,,ES-27,StatusExecutavel,§13 Legado,direta,Legado,ADR_007,,
+,,,,,,,,,,
+USID_021,Manter Informações Empresarial,Coberto,CL-008,Empresa,"§1 Tenant, Membro e Produto",direta,Conflito,"ADR_121, ADR_158",CP-05,"Cadastro da empresa cliente (CNPJ, razão social etc.), 1:1 com o Tenant."
+,,,CL-009,Endereco,"§1 Tenant, Membro e Produto",inferida,Conflito,,CP-05,"Endereços da empresa (sede, filiais, cobrança) para o faturamento."
+,,,ES-01,TipoEndereco,"§1 Tenant, Membro e Produto",inferida,Confirmado,,,
+,,,,,,,,,,
+USID_022,Manter Contexto de atuação empresarial,Coberto,CL-007,ContextoEmpresa,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_039, ADR_158",,Contexto empresarial enviado à IA.
+,,,,,,,,,,
+USID_023,Manter Contexto de Produto,Coberto,CL-004,Produto,"§1 Tenant, Membro e Produto",direta,Pendente,"ADR_030, ADR_122, ADR_129",CP-03,Cadastro dos sistemas (Produtos) de cada empresa.
+,,,CL-005,ContextoProduto,"§1 Tenant, Membro e Produto",direta,Confirmado,ADR_039,,"Informações descritivas de cada Produto, combinadas com o contexto da empresa."
+,,,,,,,,,,
+USID_024,Implementar Produto,Coberto,CL-004,Produto,"§1 Tenant, Membro e Produto",direta,Pendente,"ADR_030, ADR_122, ADR_129",CP-03,Cadastro dos sistemas (Produtos) de cada empresa.
+,,,CL-006,ConfiguracaoProduto,"§1 Tenant, Membro e Produto",direta,Confirmado,ADR_122,,Parâmetros (chave/valor) que definem se o Produto pode ser ativado.
+,,,,,,,,,,
+USID_025,Forçar execução de Varredura,Coberto,CL-044,Varredura,§6 Varredura,direta,Conflito,"ADR_004, ADR_007, ADR_010",CP-120,"Uma execução de varredura: corte da fila desordenada, priorização e publicação da fila ordenada."
+,,,CL-051,TravaVarredura,§6 Varredura,direta,Conflito,"ADR_010, ADR_058, ADR_068 +3","CP-49, CP-118, CP-129",Trava que impede duas varreduras ao mesmo tempo.
+,,,ES-15,VarreduraTrigger,§6 Varredura,direta,Confirmado,ADR_010,,
+,,,,,,,,,,
+USID_026,Configurar Agendamento de Varredura,Coberto,CL-047,AgendamentoVarredura,§6 Varredura,direta,Confirmado,"ADR_006, ADR_010",CP-61,Agendamento por expressão cron que dispara uma nova Varredura a cada execução.
+,,,CL-052,HistoricoVarredura,§6 Varredura,inferida,Conflito,"ADR_060, ADR_071, ADR_147","CP-53, CP-127",Histórico das execuções de varredura.
+,,,ES-17,AgendamentoVarreduraStatus,§6 Varredura,direta,Conflito,,CP-57,
+,,,,,,,,,,
+USID_027,Habilitar Varredura Avançada,Coberto,CL-006,ConfiguracaoProduto,"§1 Tenant, Membro e Produto",inferida,Confirmado,ADR_122,,Parâmetros (chave/valor) que definem se o Produto pode ser ativado.
+,,,CL-054,ContextoAnalise,§7 Finder,direta,Confirmado,ADR_011,,"Contexto da análise: empresa, produto, arquivo, varredura e varredura avançada."
+,,,CL-063,ScannerSeguranca,§7 Finder,direta,Confirmado,ADR_016,,Varredura avançada: detecta dados sensíveis e aplica máscara antes da LLM.
+,,,ES-20,Nivel,§7 Finder,direta,Confirmado,ADR_016,,
+,,,,,,,,,,
+USID_028,Abrir o link do Agente LLM,Parcial,CL-068,Sugestao,§9 Sugestão,direta,Conflito,"ADR_035, ADR_036, ADR_037 +4","CP-83, CP-122",Sugestão de correção gerada pela IA para uma Ocorrência.
+,,,,,,,,,,
+USID_029,Manter Gestor,Coberto,CL-002,Membro,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,CL-011,Gestor,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_003, ADR_021, ADR_030 +3",,Substituída pelo Membro.
+,,,CL-012,Vinculo,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_003, ADR_021, ADR_122 +2",,Substituída pelo Membro.
+,,,,,,,,,,
+USID_030,Controle de Acesso dos gestores aos Produtos,Coberto,CL-003,AcessoProduto,"§1 Tenant, Membro e Produto",direta,Confirmado,"ADR_032, ADR_122, ADR_126","CP-09, CP-12",Quais Produtos um MEMBRO vê (DONO e ADMIN veem todos).
+,,,CL-011,Gestor,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_003, ADR_021, ADR_030 +3",,Substituída pelo Membro.
+,,,CL-012,Vinculo,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_003, ADR_021, ADR_122 +2",,Substituída pelo Membro.
+,,,CL-013,Acesso,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_030, ADR_122 +2",,Substituída pelo Membro e pela Clerk.
+,,,,,,,,,,
+USID_031,Visualizar Dashboard,Coberto,CL-085,Metrica,§11 Dashboard,direta,Confirmado,,,Resultado de uma métrica dos dashboards.
+,,,CL-088,DashboardProduto,§11 Dashboard,direta,A conferir,,CP-101,Visão de dados e métricas de um Produto.
+,,,,,,,,,,
+USID_032,Filtrar Dashboard,Coberto,CL-086,Periodo,§11 Dashboard,direta,A conferir,,CP-102,"Intervalo de tempo de consultas, filtros e consolidações."
+,,,CL-087,FiltroDashboard,§11 Dashboard,direta,Confirmado,,,Critérios para limitar dados e métricas do Dashboard.
+,,,CL-088,DashboardProduto,§11 Dashboard,direta,A conferir,,CP-101,Visão de dados e métricas de um Produto.
+,,,,,,,,,,
+USID_033,Exportar Relatório,Coberto,CL-093,RelatorioDashboard,§12 Relatório,direta,Confirmado,,,Dados do Dashboard preparados para um relatório exportável.
+,,,CL-096,ExportacaoRelatorio,§12 Relatório,direta,Pendente,,CP-110,Registro de uma exportação de relatório.
+,,,CL-098,GeradorArquivo,§12 Relatório,direta,Pendente,,CP-108,Contrato para gerar o arquivo entregue numa exportação.
+,,,ES-25,FormatoArquivo,§12 Relatório,direta,Confirmado,,,
+,,,,,,,,,,
+USID_034,Visualizar Dashboard Empresarial,Coberto,CL-085,Metrica,§11 Dashboard,direta,Confirmado,,,Resultado de uma métrica dos dashboards.
+,,,CL-089,DashboardEmpresarial,§11 Dashboard,direta,Confirmado,,,Visão consolidada dos Produtos autorizados da empresa.
+,,,CL-092,Agregacao,§11 Dashboard,direta,Pendente,,CP-104,Consolida resultados de métricas para dashboards e relatórios.
+,,,,,,,,,,
+USID_035,Exportar Relatório Empresarial,Coberto,CL-094,RelatorioEmpresarial,§12 Relatório,direta,Proposto,ADR_158,,Dados consolidados do relatório empresarial.
+,,,CL-096,ExportacaoRelatorio,§12 Relatório,direta,Pendente,,CP-110,Registro de uma exportação de relatório.
+,,,CL-098,GeradorArquivo,§12 Relatório,direta,Pendente,,CP-108,Contrato para gerar o arquivo entregue numa exportação.
+,,,ES-25,FormatoArquivo,§12 Relatório,direta,Confirmado,,,
+,,,,,,,,,,
+USID_036,Filtrar Dashboard Empresarial,Coberto,CL-086,Periodo,§11 Dashboard,direta,A conferir,,CP-102,"Intervalo de tempo de consultas, filtros e consolidações."
+,,,CL-087,FiltroDashboard,§11 Dashboard,direta,Confirmado,,,Critérios para limitar dados e métricas do Dashboard.
+,,,CL-089,DashboardEmpresarial,§11 Dashboard,direta,Confirmado,,,Visão consolidada dos Produtos autorizados da empresa.
+,,,,,,,,,,
+USID_037,Filtrar Ocorrências Empresarial (Multi-Produto),Coberto,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,CL-090,FiltroOcorrenciaEmpresarial,§11 Dashboard,direta,Proposto,ADR_162,,Critérios para consultar ocorrências de vários Produtos.
+,,,,,,,,,,
+USID_038,Visualizar Dashboard (Mobile),Coberto,CL-091,ResumoDashboardMobile,§11 Dashboard,direta,Confirmado,ADR_025,,Resumo do Dashboard para dispositivos móveis.
+,,,,,,,,,,
+USID_039,Visualizar Assinatura,Coberto,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-018,Plano,§3 Assinatura e Pagamento,direta,Conflito,"ADR_030, ADR_036","CP-20, CP-23, CP-33, CP-34 +1","Catálogo de planos: nome, armazenamento, retenção, recursos de IA, dashboard e preço."
+,,,CL-019,TabelaPrecificacao,§3 Assinatura e Pagamento,direta,Pendente,"ADR_127, ADR_131","CP-22, CP-23",Preços e limites de cada plano.
+,,,CL-021,ProdutoRecursoIA,§3 Assinatura e Pagamento,inferida,Conflito,ADR_076,"CP-19, CP-21, CP-124, CP-127 +1","Liga plano e Produto ao recurso de IA (planoTemIA, produtoAtivouIA)."
+,,,CL-023,GatewayPagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,Contrato de integração com o gateway de pagamento externo.
+,,,ES-02,TipoPlano,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,ES-03,RecursosAnaliseIA,§3 Assinatura e Pagamento,direta,Conflito,"ADR_036, ADR_076","CP-19, CP-20, CP-131",
+,,,ES-04,TipoDashboard,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,ES-05,Periodicidade,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,,,,,,,,
+USID_040,Contratar Assinatura,Coberto,CL-001,Tenant,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_030, ADR_105, ADR_121 +4",CP-01,Empresa cliente; espelha a Organization da Clerk (clerkOrgId). Todo dado leva tenantId.
+,,,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-018,Plano,§3 Assinatura e Pagamento,direta,Conflito,"ADR_030, ADR_036","CP-20, CP-23, CP-33, CP-34 +1","Catálogo de planos: nome, armazenamento, retenção, recursos de IA, dashboard e preço."
+,,,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,CL-022,ProcessamentoPagamento,§3 Assinatura e Pagamento,direta,Confirmado,,,Orquestra o processamento das cobranças e atualiza a assinatura conforme o resultado.
+,,,CL-025,Pagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,Histórico de cada cobrança processada.
+,,,,,,,,,,
+USID_041,Alterar Assinatura,Coberto,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-018,Plano,§3 Assinatura e Pagamento,direta,Conflito,"ADR_030, ADR_036","CP-20, CP-23, CP-33, CP-34 +1","Catálogo de planos: nome, armazenamento, retenção, recursos de IA, dashboard e preço."
+,,,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,,,,,,,,
+USID_042,Cancelar Assinatura,Coberto,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,ES-06,StatusAssinatura,§3 Assinatura e Pagamento,direta,Pendente,ADR_149,CP-18,
+,,,,,,,,,,
+USID_043,Reembolsar Assinatura,Coberto,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,CL-025,Pagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,Histórico de cada cobrança processada.
+,,,CL-026,Reembolso,§3 Assinatura e Pagamento,direta,A conferir,,CP-28,Solicitações de reembolso.
+,,,ES-08,StatusReembolso,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,,,,,,,,
+USID_044,Solicitar Sugestão,Coberto,CL-018,Plano,§3 Assinatura e Pagamento,inferida,Conflito,"ADR_030, ADR_036","CP-20, CP-23, CP-33, CP-34 +1","Catálogo de planos: nome, armazenamento, retenção, recursos de IA, dashboard e preço."
+,,,CL-021,ProdutoRecursoIA,§3 Assinatura e Pagamento,inferida,Conflito,ADR_076,"CP-19, CP-21, CP-124, CP-127 +1","Liga plano e Produto ao recurso de IA (planoTemIA, produtoAtivouIA)."
+,,,CL-028,Credito,§4 Créditos,inferida,A conferir,ADR_038,CP-35,Créditos (tokens) usados pela empresa.
+,,,CL-030,Saldo,§4 Créditos,inferida,Confirmado,"ADR_038, ADR_078, ADR_098 +2",,Consolida os créditos disponíveis do cliente; recebe a reserva e a liquidação da Sugestão.
+,,,CL-064,ModuloOcorrencia,§8 Ocorrência,inferida,Proposto,"ADR_036, ADR_038, ADR_039 +3",,"Recebe o ResumoAnalise, define a gravidade, cria as Ocorrências e dispara a Sugestão automática."
+,,,CL-068,Sugestao,§9 Sugestão,direta,Conflito,"ADR_035, ADR_036, ADR_037 +4","CP-83, CP-122",Sugestão de correção gerada pela IA para uma Ocorrência.
+,,,CL-070,ContextoSugestao,§9 Sugestão,direta,Confirmado,ADR_039,CP-84,Monta o prompt da Sugestão com o contexto da empresa e do produto.
+,,,CL-075,ModuloSugestao,§9 Sugestão,direta,Proposto,"ADR_036, ADR_038, ADR_039 +1",,"Orquestra a Sugestão: monta o prompt, reserva os créditos e chama a LLM."
+,,,ES-03,RecursosAnaliseIA,§3 Assinatura e Pagamento,inferida,Conflito,"ADR_036, ADR_076","CP-19, CP-20, CP-131",
+,,,,,,,,,,
+USID_045,Visualizar Sugestão,Coberto,CL-068,Sugestao,§9 Sugestão,direta,Conflito,"ADR_035, ADR_036, ADR_037 +4","CP-83, CP-122",Sugestão de correção gerada pela IA para uma Ocorrência.
+,,,ES-21,StatusSugestao,§9 Sugestão,direta,Confirmado,"ADR_036, ADR_037, ADR_039 +4",,
+,,,,,,,,,,
+USID_046,Avaliar Sugestão,Coberto,CL-068,Sugestao,§9 Sugestão,direta,Conflito,"ADR_035, ADR_036, ADR_037 +4","CP-83, CP-122",Sugestão de correção gerada pela IA para uma Ocorrência.
+,,,CL-069,AvaliacaoSugestao,§9 Sugestão,direta,Proposto,"ADR_039, ADR_088, ADR_159",CP-83,"Avaliação de 1 a 5 estrelas, com comentário, feita por um Membro."
+,,,ES-21,StatusSugestao,§9 Sugestão,direta,Confirmado,"ADR_036, ADR_037, ADR_039 +4",,
+,,,,,,,,,,
+USID_047,Fechar Sugestão,Coberto,CL-068,Sugestao,§9 Sugestão,direta,Conflito,"ADR_035, ADR_036, ADR_037 +4","CP-83, CP-122",Sugestão de correção gerada pela IA para uma Ocorrência.
+,,,ES-21,StatusSugestao,§9 Sugestão,direta,Confirmado,"ADR_036, ADR_037, ADR_039 +4",,
+,,,,,,,,,,
+USID_048,Manter Usuário,Coberto,CL-002,Membro,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,CL-010,Usuario,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_022, ADR_030 +3",,Substituída pelo Membro (identidade na Clerk).
+,,,,,,,,,,
+USID_049,Logar na Web,Parcial,CL-002,Membro,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,CL-010,Usuario,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_022, ADR_030 +3",,Substituída pelo Membro (identidade na Clerk).
+,,,CL-013,Acesso,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_030, ADR_122 +2",,Substituída pelo Membro e pela Clerk.
+,,,,,,,,,,
+USID_050,Logar Mobile,Parcial,CL-002,Membro,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,,,,,,,,
+USID_051,Manter 2FA,Parcial,CL-002,Membro,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,CL-010,Usuario,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_022, ADR_030 +3",,Substituída pelo Membro (identidade na Clerk).
+,,,,,,,,,,
+SSID_001,Conectar o Utilitario,Coberto,CL-033,Coletor,§5 Coletor,direta,Confirmado,"ADR_007, ADR_015",,"Recebe a ingestão e coordena validação, lote e envio à fila."
+,,,CL-034,GerenciadorRequisicao,§5 Coletor,direta,Proposto,"ADR_113, ADR_117, ADR_155",,"A requisição que chega ao Coletor, com o token Bearer do Produtor (TokenApi)."
+,,,CL-041,Produtor,§5 Coletor,direta,Pendente,"ADR_106, ADR_107, ADR_109 +3",CP-37,Máquina de um Produto que envia telemetria ao Coletor.
+,,,CL-042,TokenApi,§5 Coletor,direta,Proposto,"ADR_106, ADR_107, ADR_109 +4",CP-37,"Token Bearer do Produtor: cifrado (AES-256-GCM), com índice SHA-256 para a busca."
+,,,CL-101,CredencialIngestao (SDK),§13 Legado,direta,Legado,ADR_007,CP-113,Token usado pela SDK para autenticar o Produto.
+,,,CL-103,EventoLog,§13 Legado,direta,Legado,ADR_007,,Log bruto capturado no código do Produto.
+,,,CL-104,EnvelopeIngestao,§13 Legado,direta,Legado,ADR_007,,EventoLog com os metadados mínimos para a transmissão.
+,,,CL-105,ClienteColetor,§13 Legado,direta,Legado,ADR_007,,Contrato da SDK para transmitir logs e testar a conexão com o Coletor.
+,,,CL-106,SerializadorIngestao,§13 Legado,direta,Legado,ADR_007,,Converte o envelope para o formato aceito pelo Coletor.
+,,,CL-107,ValidadorEventoLog,§13 Legado,direta,Legado,ADR_007,,Valida a consistência mínima do log antes da transmissão.
+,,,CL-108,ResultadoValidacao,§13 Legado,direta,Legado,ADR_007,,Resultado das validações antes da transmissão.
+,,,CL-110,RespostaColetor,§13 Legado,direta,Legado,ADR_007,,Retorno seguro do Coletor para a SDK.
+,,,CL-111,ResultadoEnvio,§13 Legado,direta,Legado,ADR_007,,Resultado entregue ao Produto depois de uma tentativa de envio.
+,,,CL-112,ResultadoConexao,§13 Legado,direta,Legado,ADR_007,,Resultado do teste de conectividade e autenticação da SDK.
+,,,,,,,,,,
+SSID_002,Manter Logs,Coberto,CL-001,Tenant,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_030, ADR_105, ADR_121 +4",CP-01,Empresa cliente; espelha a Organization da Clerk (clerkOrgId). Todo dado leva tenantId.
+,,,CL-033,Coletor,§5 Coletor,direta,Confirmado,"ADR_007, ADR_015",,"Recebe a ingestão e coordena validação, lote e envio à fila."
+,,,CL-035,LogRecebido,§5 Coletor,direta,Confirmado,"ADR_116, ADR_121",,Log que já passou pela entrada do Coletor.
+,,,CL-036,GerenciadorLote,§5 Coletor,direta,Confirmado,,CP-47,Regras de formação dos lotes.
+,,,CL-037,LoteAgrupador,§5 Coletor,direta,Confirmado,,CP-47,Conjunto de logs agrupados para persistência e processamento.
+,,,,,,,,,,
+SSID_003,Enfileirar Logs,Coberto,CL-033,Coletor,§5 Coletor,direta,Confirmado,"ADR_007, ADR_015",,"Recebe a ingestão e coordena validação, lote e envio à fila."
+,,,CL-038,EnfileiradorLogs,§5 Coletor,direta,Confirmado,,CP-47,Envia os trabalhos à fila.
+,,,CL-039,Arquivo,§5 Coletor,direta,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,CL-049,FilaDesordenada,§6 Varredura,direta,Confirmado,"ADR_007, ADR_010, ADR_014","CP-47, CP-48, CP-58, CP-60",Fila onde o Coletor grava os Arquivos pendentes.
+,,,,,,,,,,
+SSID_004,Marcar como Analisado,Coberto,CL-039,Arquivo,§5 Coletor,direta,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,CL-044,Varredura,§6 Varredura,inferida,Conflito,"ADR_004, ADR_007, ADR_010",CP-120,"Uma execução de varredura: corte da fila desordenada, priorização e publicação da fila ordenada."
+,,,CL-046,ArquivoVarredura,§6 Varredura,direta,Conflito,"ADR_014, ADR_099","CP-55, CP-120","Controle de um Arquivo dentro de uma Varredura (ordem, status, tentativas, erro)."
+,,,CL-065,ResumoArquivo,§8 Ocorrência,direta,Proposto,"ADR_019, ADR_035, ADR_040 +3",,Resumo por Arquivo: contadores e ids das Ocorrências do Arquivo.
+,,,ES-16,ArquivoScanStatus,§6 Varredura,direta,Pendente,"ADR_014, ADR_046, ADR_049 +2","CP-54, CP-55",
+,,,,,,,,,,
+SSID_005,Executar Varredura (Forçar Varredura),Coberto,CL-044,Varredura,§6 Varredura,direta,Conflito,"ADR_004, ADR_007, ADR_010",CP-120,"Uma execução de varredura: corte da fila desordenada, priorização e publicação da fila ordenada."
+,,,ES-15,VarreduraTrigger,§6 Varredura,direta,Confirmado,ADR_010,,
+,,,,,,,,,,
+SSID_006,Executar Varredura Agendada,Coberto,CL-044,Varredura,§6 Varredura,direta,Conflito,"ADR_004, ADR_007, ADR_010",CP-120,"Uma execução de varredura: corte da fila desordenada, priorização e publicação da fila ordenada."
+,,,CL-047,AgendamentoVarredura,§6 Varredura,direta,Confirmado,"ADR_006, ADR_010",CP-61,Agendamento por expressão cron que dispara uma nova Varredura a cada execução.
+,,,CL-052,HistoricoVarredura,§6 Varredura,inferida,Conflito,"ADR_060, ADR_071, ADR_147","CP-53, CP-127",Histórico das execuções de varredura.
+,,,ES-15,VarreduraTrigger,§6 Varredura,direta,Confirmado,ADR_010,,
+,,,,,,,,,,
+SSID_007,Identificar Ocorrencia,Coberto,CL-053,Finder,§7 Finder,direta,Proposto,"ADR_062, ADR_161",,Orquestra a análise de cada Arquivo e envia o ResumoAnalise ao Módulo Ocorrência.
+,,,CL-055,LogNormalizado,§7 Finder,direta,Confirmado,ADR_016,,"Formato universal dos logs para o Finder (TXT, LOG, JSON, CSV)."
+,,,CL-056,MotorAnalise,§7 Finder,direta,Pendente,"ADR_011, ADR_016, ADR_017 +1","CP-66, CP-69",Analisa o LogNormalizado com a LLM do Finder e verifica recorrência.
+,,,CL-057,GatewayLLMFinder,§7 Finder,direta,Confirmado,"ADR_018, ADR_067, ADR_080",,Contrato da LLM usada pelo Finder.
+,,,CL-060,AchadoAnalise,§7 Finder,direta,Conflito,"ADR_017, ADR_020, ADR_040 +2","CP-63, CP-65, CP-115, CP-133",DTO do que o MotorAnalise encontrou; vira Ocorrência concreta.
+,,,CL-061,ResumoAnalise,§7 Finder,direta,Conflito,"ADR_062, ADR_070, ADR_102","CP-74, CP-116, CP-127","Saída do Finder por Arquivo: contadores e achados, enviada ao Módulo Ocorrência."
+,,,CL-062,ClassificadorAnalise,§7 Finder,direta,Conflito,"ADR_012, ADR_017, ADR_019","CP-64, CP-77, CP-130",Aplica as regras de negócio e classifica cada achado com o enum Tipo.
+,,,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,ES-19,Tipo,§7 Finder,direta,Confirmado,"ADR_012, ADR_019",,
+,,,,,,,,,,
+SSID_008,Executar Varredura Avançada,Coberto,CL-053,Finder,§7 Finder,inferida,Proposto,"ADR_062, ADR_161",,Orquestra a análise de cada Arquivo e envia o ResumoAnalise ao Módulo Ocorrência.
+,,,CL-054,ContextoAnalise,§7 Finder,direta,Confirmado,ADR_011,,"Contexto da análise: empresa, produto, arquivo, varredura e varredura avançada."
+,,,CL-063,ScannerSeguranca,§7 Finder,direta,Confirmado,ADR_016,,Varredura avançada: detecta dados sensíveis e aplica máscara antes da LLM.
+,,,ES-20,Nivel,§7 Finder,direta,Confirmado,ADR_016,,
+,,,,,,,,,,
+SSID_009,Enviar Ocorrências,Coberto,CL-014,PapelNotificacao,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_130, ADR_131, ADR_132 +10",,Papel de notificação do Tenant: define quem recebe quais alertas.
+,,,CL-015,PapelSeveridade,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_134, ADR_142",,Gravidades que um papel de notificação recebe.
+,,,CL-016,PapelTipoAlerta,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_134, ADR_142",,Tipos de alerta que um papel de notificação recebe.
+,,,CL-061,ResumoAnalise,§7 Finder,direta,Conflito,"ADR_062, ADR_070, ADR_102","CP-74, CP-116, CP-127","Saída do Finder por Arquivo: contadores e achados, enviada ao Módulo Ocorrência."
+,,,CL-064,ModuloOcorrencia,§8 Ocorrência,direta,Proposto,"ADR_036, ADR_038, ADR_039 +3",,"Recebe o ResumoAnalise, define a gravidade, cria as Ocorrências e dispara a Sugestão automática."
+,,,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-084,TentativaEntrega,§10 Notificação,inferida,Confirmado,,"CP-98, CP-99","Uma tentativa de entrega da notificação (status, data, motivo da falha)."
+,,,ES-19,Tipo,§7 Finder,direta,Confirmado,"ADR_012, ADR_019",,
+,,,,,,,,,,
+SSID_010,Registrar Ocorrencia,Coberto,CL-001,Tenant,"§1 Tenant, Membro e Produto",inferida,Proposto,"ADR_030, ADR_105, ADR_121 +4",CP-01,Empresa cliente; espelha a Organization da Clerk (clerkOrgId). Todo dado leva tenantId.
+,,,CL-064,ModuloOcorrencia,§8 Ocorrência,direta,Proposto,"ADR_036, ADR_038, ADR_039 +3",,"Recebe o ResumoAnalise, define a gravidade, cria as Ocorrências e dispara a Sugestão automática."
+,,,CL-066,Ocorrencia,§8 Ocorrência,direta,Conflito,"ADR_035, ADR_040, ADR_062 +5","CP-64, CP-76, CP-77, CP-114 +1",Ocorrência concreta: um erro ou warning de um Arquivo.
+,,,CL-067,Mapper,§8 Ocorrência,direta,Proposto,"ADR_040, ADR_062, ADR_161",,Converte cada AchadoAnalise em Ocorrencia.
+,,,,,,,,,,
+SSID_011,Gerar Relátorios,Coberto,CL-086,Periodo,§11 Dashboard,direta,A conferir,,CP-102,"Intervalo de tempo de consultas, filtros e consolidações."
+,,,CL-092,Agregacao,§11 Dashboard,direta,Pendente,,CP-104,Consolida resultados de métricas para dashboards e relatórios.
+,,,CL-095,RelatorioConsolidado,§12 Relatório,direta,Confirmado,,,Resultado consolidado de métricas e agregações de um período.
+,,,CL-097,GeracaoRelatorioAgendada,§12 Relatório,direta,Pendente,,CP-109,Geração programada dos dados consolidados.
+,,,,,,,,,,
+SSID_012,Criar Agendamento de Varredurar,Coberto,CL-047,AgendamentoVarredura,§6 Varredura,direta,Confirmado,"ADR_006, ADR_010",CP-61,Agendamento por expressão cron que dispara uma nova Varredura a cada execução.
+,,,,,,,,,,
+SSID_013,Enviar Arquivo(Importado) para Varredura,Coberto,CL-039,Arquivo,§5 Coletor,direta,Conflito,"ADR_007, ADR_014, ADR_015 +4","CP-41, CP-42, CP-43, CP-55 +1",Pacote de traces e logs gravado pelo Coletor; unidade da fila (também o arquivo do upload manual).
+,,,CL-053,Finder,§7 Finder,direta,Proposto,"ADR_062, ADR_161",,Orquestra a análise de cada Arquivo e envia o ResumoAnalise ao Módulo Ocorrência.
+,,,,,,,,,,
+SSID_014,Manter Tokens de Conexão,Coberto,CL-034,GerenciadorRequisicao,§5 Coletor,direta,Proposto,"ADR_113, ADR_117, ADR_155",,"A requisição que chega ao Coletor, com o token Bearer do Produtor (TokenApi)."
+,,,CL-041,Produtor,§5 Coletor,direta,Pendente,"ADR_106, ADR_107, ADR_109 +3",CP-37,Máquina de um Produto que envia telemetria ao Coletor.
+,,,CL-042,TokenApi,§5 Coletor,direta,Proposto,"ADR_106, ADR_107, ADR_109 +4",CP-37,"Token Bearer do Produtor: cifrado (AES-256-GCM), com índice SHA-256 para a busca."
+,,,CL-043,CredencialIngestao,§5 Coletor,direta,Substituída,"ADR_025, ADR_028, ADR_111 +2",,Tabela de credencial do servidor; substituída pelo TokenApi.
+,,,,,,,,,,
+SSID_015,Usar Contexto,Coberto,CL-005,ContextoProduto,"§1 Tenant, Membro e Produto",direta,Confirmado,ADR_039,,"Informações descritivas de cada Produto, combinadas com o contexto da empresa."
+,,,CL-007,ContextoEmpresa,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_039, ADR_158",,Contexto empresarial enviado à IA.
+,,,CL-070,ContextoSugestao,§9 Sugestão,direta,Confirmado,ADR_039,CP-84,Monta o prompt da Sugestão com o contexto da empresa e do produto.
+,,,CL-075,ModuloSugestao,§9 Sugestão,direta,Proposto,"ADR_036, ADR_038, ADR_039 +1",,"Orquestra a Sugestão: monta o prompt, reserva os créditos e chama a LLM."
+,,,,,,,,,,
+SSID_016,Manter Assinatura,Coberto,CL-017,GerenciadorAssinatura,§3 Assinatura e Pagamento,direta,Confirmado,"ADR_030, ADR_149",,"Orquestra contratação, alteração, cancelamento, reembolso e inadimplência."
+,,,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,CL-022,ProcessamentoPagamento,§3 Assinatura e Pagamento,direta,Confirmado,,,Orquestra o processamento das cobranças e atualiza a assinatura conforme o resultado.
+,,,CL-027,EventoGateway,§3 Assinatura e Pagamento,direta,Conflito,"ADR_125, ADR_149","CP-25, CP-26, CP-125","Evento bruto do gateway, traduzido para as regras internas."
+,,,ES-06,StatusAssinatura,§3 Assinatura e Pagamento,direta,Pendente,ADR_149,CP-18,
+,,,ES-09,TipoOperacaoGateway,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,CP-25,
+,,,ES-10,ResultadoEventoGateway,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,,,,,,,,
+SSID_017,Integração de Autenticação,Coberto,CL-001,Tenant,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_030, ADR_105, ADR_121 +4",CP-01,Empresa cliente; espelha a Organization da Clerk (clerkOrgId). Todo dado leva tenantId.
+,,,CL-002,Membro,"§1 Tenant, Membro e Produto",direta,Proposto,"ADR_122, ADR_123, ADR_132 +2","CP-01, CP-02, CP-09, CP-11","Pessoa de um Tenant, com papel DONO, ADMIN ou MEMBRO; a identidade fica na Clerk."
+,,,CL-010,Usuario,"§1 Tenant, Membro e Produto",direta,Substituída,"ADR_021, ADR_022, ADR_030 +3",,Substituída pelo Membro (identidade na Clerk).
+,,,,,,,,,,
+SSID_018,Integração de Pagamento,Coberto,CL-020,Assinatura,§3 Assinatura e Pagamento,direta,Proposto,"ADR_030, ADR_104, ADR_122 +2","CP-09, CP-16","Assinatura contratada por uma empresa: plano, status, vigência e carência."
+,,,CL-022,ProcessamentoPagamento,§3 Assinatura e Pagamento,direta,Confirmado,,,Orquestra o processamento das cobranças e atualiza a assinatura conforme o resultado.
+,,,CL-023,GatewayPagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,Contrato de integração com o gateway de pagamento externo.
+,,,CL-024,ApiPagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,"Integrador com o gateway externo (cobranças, transações, autenticidade)."
+,,,CL-025,Pagamento,§3 Assinatura e Pagamento,direta,Proposto,ADR_149,,Histórico de cada cobrança processada.
+,,,CL-027,EventoGateway,§3 Assinatura e Pagamento,direta,Conflito,"ADR_125, ADR_149","CP-25, CP-26, CP-125","Evento bruto do gateway, traduzido para as regras internas."
+,,,ES-07,StatusPagamento,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,ES-10,ResultadoEventoGateway,§3 Assinatura e Pagamento,direta,Confirmado,,,
+,,,,,,,,,,
+SSID_019,Integração de Notificação,Coberto,CL-014,PapelNotificacao,§2 Papéis de notificação — matriz de alertas,inferida,Confirmado,"ADR_130, ADR_131, ADR_132 +10",,Papel de notificação do Tenant: define quem recebe quais alertas.
+,,,CL-076,Notificacao,§10 Notificação,direta,Conflito,"ADR_036, ADR_037, ADR_081 +1","CP-89, CP-99, CP-123","Notificação individual enviada a um usuário por um canal, com leitura."
+,,,CL-078,GatewayNotificacao,§10 Notificação,direta,Confirmado,,,Contrato único de envio que todo canal implementa.
+,,,CL-079,GatewayNotificacaoFactory,§10 Notificação,direta,Confirmado,,,Devolve o enviador certo pelo canal da Notificação.
+,,,,,,,,,,
+SSID_020,Integração de LLM,Coberto,CL-028,Credito,§4 Créditos,direta,A conferir,ADR_038,CP-35,Créditos (tokens) usados pela empresa.
+,,,CL-030,Saldo,§4 Créditos,direta,Confirmado,"ADR_038, ADR_078, ADR_098 +2",,Consolida os créditos disponíveis do cliente; recebe a reserva e a liquidação da Sugestão.
+,,,CL-031,Transacao,§4 Créditos,direta,Confirmado,ADR_038,,Extrato auditável das movimentações de créditos.
+,,,CL-032,Controle,§4 Créditos,direta,Conflito,ADR_038,CP-34,Controle do gasto de tokens e da assinatura do plano contratado.
+,,,CL-056,MotorAnalise,§7 Finder,direta,Pendente,"ADR_011, ADR_016, ADR_017 +1","CP-66, CP-69",Analisa o LogNormalizado com a LLM do Finder e verifica recorrência.
+,,,CL-057,GatewayLLMFinder,§7 Finder,direta,Confirmado,"ADR_018, ADR_067, ADR_080",,Contrato da LLM usada pelo Finder.
+,,,CL-071,GatewayLLMSugestao,§9 Sugestão,direta,Pendente,"ADR_018, ADR_039, ADR_080","CP-85, CP-86",Contrato de comunicação com o provedor de LLM da Sugestão.
+,,,CL-072,GatewayLLMPadrao,§9 Sugestão,direta,Confirmado,ADR_039,CP-85,Implementa a chamada ao provedor de LLM configurado.
+,,,CL-073,RespostaLLM,§9 Sugestão,direta,Confirmado,ADR_038,,Retorno bruto da LLM: texto gerado e tokens consumidos.
+,,,CL-074,ChaveLLMTenant,§9 Sugestão,direta,Pendente,"ADR_080, ADR_128",CP-86,Chave de LLM do próprio cliente (BYOK).
+,,,CL-075,ModuloSugestao,§9 Sugestão,direta,Proposto,"ADR_036, ADR_038, ADR_039 +1",,"Orquestra a Sugestão: monta o prompt, reserva os créditos e chama a LLM."
+,,,ES-11,TipoTransacao,§4 Créditos,inferida,Confirmado,ADR_038,,
+,,,ES-12,StatusTransacao,§4 Créditos,inferida,Confirmado,,,
+,,,ES-13,StatusOperacao,§4 Créditos,inferida,Confirmado,ADR_038,,
