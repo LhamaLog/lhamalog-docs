@@ -1,0 +1,104 @@
+%% DC-10 - módulo 9: Sugestão (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 9. Para gerar o SVG: mmdc -i "Sugestão.mmd" -o "Sugestão.svg"
+classDiagram
+    direction LR
+    class Sugestao {
+        -UUID sugestao_id
+        -UUID ocorrencia_id
+        -String conteudo
+        -StatusSugestao status
+        -Integer avaliacao
+        -Integer tokens_consumidos
+        -String link_conversa_externa
+        -DateTime data_solicitacao
+        -DateTime data_conclusao
+        -DateTime data_fechamento
+        -motivoFalha
+        +Sugestao(UUID ocorrencia_id, String conteudo, Integer tokens_consumidos)
+        +avaliar(Integer nota) void
+        +fechar() void
+    }
+    class StatusSugestao {
+        <<enumeration>>
+        PROCESSANDO
+        AGUARDANDO_REVISAO
+        FECHADA
+        FALHA
+    }
+    class AvaliacaoSugestao {
+        <<sem aba>>
+        -UUID id
+        -sugestaoId
+        -membroId
+        -Integer nota
+        -String comentario
+        -DateTime criadaEm
+    }
+    class ContextoSugestao {
+        -UUID ocorrencia_id
+        -ContextoEmpresa contextoEmpresarial
+        -ContextoProduto contextoProduto
+        +ContextoSugestao(UUID ocorrencia_id, ContextoEmpresa contextoEmpresarial, ContextoProduto contextoProduto)
+        +montarPrompt() String
+    }
+    class GatewayLLMSugestao {
+        <<interface>>
+        +solicitar(String prompt) RespostaLLM
+    }
+    class GatewayLLMPadrao {
+        +solicitar(String prompt) RespostaLLM
+    }
+    class RespostaLLM {
+        -String conteudo
+        -Integer tokens_consumidos
+        +RespostaLLM(String conteudo, Integer tokens_consumidos)
+    }
+    class ChaveLLMTenant {
+        <<sem aba>>
+        -string tenantId
+        -string provedor
+        -string chaveCifrada
+        -date revokedAt
+    }
+    class Ocorrencia {
+        <<Ocorrencia>>
+    }
+    class ContextoEmpresa {
+        <<TenantMembroProduto>>
+    }
+    class ContextoProduto {
+        <<TenantMembroProduto>>
+    }
+    class Tenant {
+        <<TenantMembroProduto>>
+    }
+    class Membro {
+        <<TenantMembroProduto>>
+    }
+    class ModuloSugestao {
+        <<sem aba>>
+    }
+    class ModuloOcorrencia {
+        <<Ocorrencia>>
+    }
+    class Saldo {
+        <<Creditos>>
+    }
+
+    Sugestao "0..*" --> "1" Ocorrencia : ocorrencia_id
+    Sugestao --> StatusSugestao
+    Sugestao "1" -- "0..*" AvaliacaoSugestao : avaliacoes
+    ContextoSugestao --> Ocorrencia : ocorrencia_id
+    ContextoSugestao --> ContextoEmpresa : contextoEmpresarial
+    ContextoSugestao --> ContextoProduto
+    GatewayLLMPadrao ..|> GatewayLLMSugestao
+    GatewayLLMSugestao ..> RespostaLLM
+    GatewayLLMPadrao ..> RespostaLLM : solicitar
+    GatewayLLMSugestao ..> ChaveLLMTenant : escolhe a credencial
+    Tenant "1" -- "0..*" ChaveLLMTenant : byok
+    AvaliacaoSugestao "0..*" --> "1" Membro : membroId
+    ModuloOcorrencia ..> ModuloSugestao : dispararSugestaoAutomatica
+    ModuloSugestao ..> Sugestao : cria (automatica e manual)
+    ModuloSugestao ..> ContextoSugestao : montarPrompt
+    ModuloSugestao ..> GatewayLLMSugestao : solicitar
+    ModuloSugestao ..> Saldo : reserva e liquida

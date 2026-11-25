@@ -1,0 +1,121 @@
+%% DC-10 - módulo 10: Notificação (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 10. Para gerar o SVG: mmdc -i "Notificação.mmd" -o "Notificação.svg"
+classDiagram
+    direction LR
+    class Notificacao {
+        -UUID notificacao_id
+        -UUID ocorrencia_id
+        -UUID membroId
+        -UUID sugestao_id
+        -tipo
+        -CanalNotificacao canal
+        -String conteudo
+        -TentativaEntrega tentativaEntrega
+        -Boolean lida
+        -Boolean arquivada
+        -DateTime data_criacao
+        -DateTime data_leitura
+        +Notificacao(ocorrencia_id, membroId, canal, conteudo)
+        +Notificacao(ocorrencia_id, membroId, canal, conteudo, sugestao_id)
+        +marcarComoLida() void
+        +arquivar() void
+    }
+    class CanalNotificacao {
+        <<enumeration>>
+        EMAIL
+        PUSH
+        WEB
+    }
+    class PreferenciaNotificacao {
+        -UUID membroId
+        -Boolean email_habilitado
+        -Boolean push_habilitado
+        -Boolean web_habilitado
+        -String email_contato
+        +habilitarCanal(CanalNotificacao canal) void
+        +desabilitarCanal(CanalNotificacao canal) void
+        +possuiCanalHabilitado(CanalNotificacao canal) Boolean
+    }
+    class GatewayNotificacao {
+        <<interface>>
+        +enviar(Notificacao notificacao) TentativaEntrega
+    }
+    class GatewayNotificacaoFactory {
+        +obterGateway(CanalNotificacao canal) GatewayNotificacao
+    }
+    class EnviadorEmail {
+        +enviar(Notificacao notificacao) StatusEnvioNotificacao
+        -formatarCorpoEmail(String conteudo) String
+    }
+    class EnviadorPush {
+        +enviar(Notificacao notificacao) StatusEnvioNotificacao
+        -obterDispositivos(UUID membroId) List~DispositivoPush~
+    }
+    class EnviadorWeb {
+        +enviar(Notificacao notificacao) StatusEnvioNotificacao
+        -publicarViaWebSocket(UUID membroId, String conteudo) void
+    }
+    class DispositivoPush {
+        -UUID dispositivo_id
+        -UUID membroId
+        -String device_token
+        -PlataformaDispositivo plataforma
+        -DateTime data_registro
+        -DateTime ultimo_uso
+        +atualizarToken(String novo_token) void
+    }
+    class PlataformaDispositivo {
+        <<enumeration>>
+        IOS
+        ANDROID
+    }
+    class TentativaEntrega {
+        -UUID tentativa_id
+        -UUID notificacao_id
+        -StatusEnvioNotificacao status_envio
+        -DateTime data_tentativa
+        -String motivo_falha
+        +TentativaEntrega(UUID notificacao_id)
+        +marcarComoEnviada() void
+        +marcarComoFalha(String motivo) void
+    }
+    class StatusEnvioNotificacao {
+        <<enumeration>>
+        PENDENTE
+        ENVIADA
+        FALHA
+    }
+    class Ocorrencia {
+        <<Ocorrencia>>
+    }
+    class Sugestao {
+        <<Sugestao>>
+    }
+    class Membro {
+        <<TenantMembroProduto>>
+    }
+
+    GatewayNotificacaoFactory ..> GatewayNotificacao : obterGateway
+    EnviadorEmail ..|> GatewayNotificacao
+    EnviadorPush ..|> GatewayNotificacao
+    EnviadorWeb ..|> GatewayNotificacao
+    EnviadorPush ..> DispositivoPush : obterDispositivos
+    GatewayNotificacao ..> Notificacao : enviar
+    Notificacao "1" -- "0..*" TentativaEntrega : entregas
+    Notificacao --> CanalNotificacao
+    TentativaEntrega --> StatusEnvioNotificacao
+    DispositivoPush --> PlataformaDispositivo
+    Notificacao --> Ocorrencia : ocorrencia_id
+    Notificacao --> "0..1" Sugestao : sugestao_id
+    Membro "1" -- "0..*" Notificacao : recebe por papel
+    PreferenciaNotificacao --> Membro : membroId
+    DispositivoPush --> Membro : membroId
+    PreferenciaNotificacao ..> CanalNotificacao : habilitarCanal / desabilitarCanal / possuiCanalHabilitado
+    GatewayNotificacao ..> TentativaEntrega : enviar
+    GatewayNotificacaoFactory ..> CanalNotificacao : obterGateway
+    EnviadorEmail ..> Notificacao : enviar
+    EnviadorPush ..> Notificacao : enviar
+    EnviadorWeb ..> Notificacao : enviar
+    EnviadorEmail ..> StatusEnvioNotificacao
+    EnviadorPush ..> StatusEnvioNotificacao
+    EnviadorWeb ..> StatusEnvioNotificacao

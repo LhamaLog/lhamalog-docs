@@ -1,0 +1,118 @@
+%% DC-10 - módulo 4: Créditos (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 4. Para gerar o SVG: mmdc -i "Créditos.mmd" -o "Créditos.svg"
+classDiagram
+    direction LR
+    class Credito {
+        -uuid credit_id
+        -Produto produto
+        -ContextoEmpresa contexto
+        -status
+        -totalDeCreditos
+        -qtdCreditosRestantes
+        -custoAtualDeCreditos
+        -DateTime dataHora
+        +foiBemSucedida() boolean
+    }
+    class PlanoCreditos {
+        -integer plano_id
+        -string nome
+        -string descicao
+        -float valor
+        -periodicidade
+        -integer creditos_por_ciclo
+        -bool ativo
+        -dateTime data_assinado
+        -dateTime data_desativacao
+        -EhAtivo() bool
+        +AtivarPlano() void
+        -DesativarPlano() void
+        +GerarCreditos(datetime data_referencia) Credito
+    }
+    class Saldo {
+        -uuid saldo_id
+        -List~Credito~ creditos
+        -integer total_disponivel
+        -datetime data_ultima_atualiacao
+        +ConsultarSaldo() integer
+        +AdicionarCredito(Credito credito) void
+        +SelecionarCreditosParaConsumo(integer quantidade) List~Credito~
+        +AtualizarSaldo() void
+    }
+    class Transacao {
+        -uuid transacao_id
+        -ContextoEmpresa contexto
+        -Credito credito
+        -Produto produto
+        -TipoTransacao tipo
+        -integer quantidade
+        -integer saldo_anterior
+        -integer saldo_posterior
+        -StatusTransacao status
+        -datetime data_hora
+        -integer transacao_origem_id
+        +FoiBemSucedida() bool
+        +Registrar() bool
+        +EhEstorno() bool
+        +GerarEstorno() Transacao
+    }
+    class TipoTransacao {
+        <<enumeration>>
+        CONSUMO
+        RECARGA
+        ESTORNO
+        EXPIRACAO
+    }
+    class StatusTransacao {
+        <<enumeration>>
+        SUCESSO
+        FALHA
+    }
+    class Controle {
+        -uuid controle_id
+        -ContextoEmpresa contexto
+        -Plano plano
+        -Saldo saldo
+        -Produto produto
+        -integer quantidade_solicitada
+        -integer custo_calculado
+        -datetime data_hora_coletada
+        -StatusOperacao status_operacao
+        +ColetarDados(Produto produto, integer quantidade) void
+        +AutorizarConsumo() bool
+        +ExecutarConsumo() Transacao
+        +ReverterOperacao(Transacao transacao) Transacao
+    }
+    class StatusOperacao {
+        <<enumeration>>
+        PENDENTE
+        AUTORIZADA
+        NEGADA
+        CONCLUIDA
+        REVERTIDA
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+    class ContextoEmpresa {
+        <<TenantMembroProduto>>
+    }
+    class ModuloSugestao {
+        <<Sugestao>>
+    }
+
+    Saldo o-- "0..*" Credito : creditos
+    ModuloSugestao ..> Saldo : reserva e liquida (Sugestao)
+    Transacao --> Credito : credito
+    Transacao --> Transacao : transacao_origem_id
+    Controle --> Saldo : saldo
+    Controle ..> Transacao : ExecutarConsumo / ReverterOperacao
+    PlanoCreditos ..> Credito : GerarCreditos
+    Credito --> Produto
+    Credito --> ContextoEmpresa
+    Transacao --> Produto
+    Transacao --> ContextoEmpresa
+    Controle --> Produto
+    Controle --> ContextoEmpresa
+    Transacao --> TipoTransacao
+    Transacao --> StatusTransacao
+    Controle --> StatusOperacao

@@ -1,0 +1,134 @@
+%% DC-10 - módulo 5: Coletor (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 5. Para gerar o SVG: mmdc -i "Coletor.mmd" -o "Coletor.svg"
+classDiagram
+    direction LR
+    class Coletor {
+        -GerenciadorRequisicao GerenciadorRequisicao
+        -GerenciadorLote GerenciadorLote
+        -Varredura Varredura
+        -EnfileiradorLogs EnfilerarLog
+        +ReceberLog() GerenciadorRequisicao
+        +EnviarLote() List~Arquivo~
+        +EnviarArquivo() Arquivo
+    }
+    class GerenciadorRequisicao {
+        -TokenApi Token
+        -uuid ProdutoId
+        -uuid EmpresaId
+        -LogRecebido LogRecebido
+        +PersistirLog() void
+        -ValidarContexto() boolean
+        -ValidarOrigem() boolean
+        +LocalizarLog() LogRecebido
+    }
+    class LogRecebido {
+        -uuid logId
+        -uuid empresaId
+        -uuid produtoId
+        -Arquivo Arquivo
+        -DateTime DataRecebido
+        +AssociarLogLote() void
+    }
+    class GerenciadorLote {
+        -LoteAgrupador LoteAgrupador
+        -Log TamanhoMaximoByte
+        -Int QauntidadeMaximaLog
+        +CriarLotes() List~LoteAgrupador~
+        +CriarLoteUnico() LoteAgrupador
+        +ValidarLote() boolean
+    }
+    class LoteAgrupador {
+        -uuid loteId
+        -uuid empresaId
+        -uuid produtoId
+        -List~LogRecebido~ Logs
+        -boolean Enviado
+        +AdicionarLog() void
+    }
+    class EnfileiradorLogs {
+        -GerenciadorLote GerenciadorLote
+        +EnfilerarLote() void
+    }
+    class Arquivo {
+        -uuid id
+        -nome
+        -string bucket_URL
+        -timestamp imported_at
+        -string extension
+        -int size_mb
+        -uuid owner_id
+        -uuid product_id
+        -uuid company_id
+        -status
+        -origem
+        -bool is_deleted
+        -timestamp generated_at
+        -int trace_count
+        +loadLines() Stream~String~
+        +destroy()
+        +getTraces() Trace[]
+    }
+    class Trace {
+        -uuid id
+        -uuid arquivo_id
+        -string trace_id
+        -string correlation_id
+        -string host_name
+        -timestamp generated_at
+        -uuid[] modulo_ids
+        -NivelPrioridade prioridade
+        +resolvePrioridade(Modulo[] modulos) NivelPrioridade
+    }
+    class Produtor {
+        <<sem aba>>
+        -string producerId
+        -string tenantId
+        -string produtoId
+    }
+    class TokenApi {
+        <<sem aba>>
+        -string producerId
+        -string tokenCifrado
+        -string hashSha256
+        -date revokedAt
+    }
+    class CredencialIngestao {
+        <<substituida>>
+        -UUID id
+        -String tipo
+        -String identificador
+        -String status
+        -DateTime criadaEm
+        -DateTime expiraEm
+        -DateTime revogadaEm
+    }
+    class Varredura {
+        <<Varredura>>
+    }
+    class Modulo {
+        <<Varredura>>
+    }
+    class Tenant {
+        <<TenantMembroProduto>>
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+
+    Coletor --> GerenciadorRequisicao : ReceberLog
+    Coletor --> GerenciadorLote
+    Coletor --> EnfileiradorLogs
+    Coletor --> Varredura
+    Coletor ..> Arquivo : EnviarLote / EnviarArquivo
+    GerenciadorRequisicao --> LogRecebido
+    LogRecebido --> Arquivo
+    GerenciadorLote --> LoteAgrupador
+    LoteAgrupador "1" -- "1..*" LogRecebido : agrupa
+    EnfileiradorLogs --> GerenciadorLote
+    Arquivo "1" -- "1..*" Trace : agrupa
+    Trace "0..*" -- "1..*" Modulo : passa por
+    Produto "1" -- "0..*" Produtor : produtores
+    Produtor "1" -- "0..*" TokenApi : tokens
+    Produtor --> Tenant : tenantId
+    CredencialIngestao ..> TokenApi : substituida por
+    GerenciadorRequisicao ..> TokenApi : busca pelo hash SHA-256

@@ -1,0 +1,124 @@
+%% DC-10 - módulo 12: Relatório (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 12. Para gerar o SVG: mmdc -i "Relatório.mmd" -o "Relatório.svg"
+classDiagram
+    direction LR
+    class RelatorioDashboard {
+        -DashboardProduto dashboard
+        -FiltroDashboard filtroAplicado
+        -List~Metrica~ metricas
+        -Periodo periodo
+        -DateTime dataGeracao
+        +gerar() void
+        +carregarDados() void
+        +obterMetricas() List~Metrica~
+        +atualizarDados() void
+    }
+    class RelatorioEmpresarial {
+        -Empresa empresa
+        -DashboardEmpresarial dashboard
+        -List~Produto~ produtosAutorizados
+        -List~Metrica~ metricasAgregadas
+        -Periodo periodo
+        -DateTime dataGeracao
+        +gerar() void
+        +carregarDados() void
+        +obterMetricasAgregadas() List~Metrica~
+        +atualizarDados() void
+    }
+    class RelatorioConsolidado {
+        -Produto produto
+        -Periodo periodo
+        -List~Metrica~ metricas
+        -List~Agregacao~ agregacoes
+        -DateTime dataConsolidacao
+        -boolean processado
+        +consolidar() void
+        +adicionarMetrica(Metrica metrica) void
+        +adicionarAgregacao(Agregacao agregacao) void
+        +obterMetricas() List~Metrica~
+        +marcarProcessado() void
+        +zerarResultados() void
+    }
+    class ExportacaoRelatorio {
+        -FormatoArquivo formato
+        -DateTime dataSolicitacao
+        -DateTime dataConclusao
+        -String status
+        -String arquivoGerado
+        +exportar(RelatorioDashboard relatorio) void
+        +exportarEmpresarial(RelatorioEmpresarial relatorio) void
+        +cancelar() void
+        +registrarExportacao() void
+        +concluir(String arquivo) void
+    }
+    class FormatoArquivo {
+        <<enumeration>>
+        PDF
+        CSV
+    }
+    class GeracaoRelatorioAgendada {
+        -RelatorioConsolidado relatorio
+        -Periodo periodo
+        -boolean ativo
+        -String frequencia
+        -DateTime ultimaExecucao
+        -DateTime proximaExecucao
+        -String timezone
+        +executar() RelatorioConsolidado
+        +reagendar() void
+        +ativar() void
+        +desativar() void
+        +registrarFalha() void
+    }
+    class GeradorArquivo {
+        <<interface>>
+        +gerar(RelatorioDashboard relatorio, FormatoArquivo formato) String
+        +gerarEmpresarial(RelatorioEmpresarial relatorio, FormatoArquivo formato) String
+    }
+    class DashboardProduto {
+        <<Dashboard>>
+    }
+    class DashboardEmpresarial {
+        <<Dashboard>>
+    }
+    class FiltroDashboard {
+        <<Dashboard>>
+    }
+    class Metrica {
+        <<Dashboard>>
+    }
+    class Agregacao {
+        <<Dashboard>>
+    }
+    class Periodo {
+        <<Dashboard>>
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+    class Empresa {
+        <<TenantMembroProduto>>
+    }
+
+    RelatorioDashboard --> DashboardProduto : dashboard
+    RelatorioDashboard --> FiltroDashboard : filtroAplicado
+    RelatorioDashboard o-- Metrica
+    RelatorioDashboard --> Periodo
+    RelatorioEmpresarial --> DashboardEmpresarial : dashboard
+    RelatorioEmpresarial --> Empresa
+    RelatorioEmpresarial --> "0..*" Produto : produtosAutorizados
+    RelatorioEmpresarial o-- Metrica
+    RelatorioEmpresarial --> Periodo
+    RelatorioConsolidado --> Produto
+    RelatorioConsolidado --> Periodo
+    RelatorioConsolidado o-- Metrica
+    RelatorioConsolidado o-- Agregacao
+    ExportacaoRelatorio --> FormatoArquivo
+    ExportacaoRelatorio ..> RelatorioDashboard : exportar
+    ExportacaoRelatorio ..> RelatorioEmpresarial : exportarEmpresarial
+    GeracaoRelatorioAgendada --> RelatorioConsolidado : relatorio
+    GeracaoRelatorioAgendada --> Periodo
+    GeradorArquivo ..> RelatorioDashboard
+    GeradorArquivo ..> RelatorioEmpresarial
+    GeradorArquivo ..> FormatoArquivo
+    note for ExportacaoRelatorio "Fora do MVP (ADR_166): exportacao, GeradorArquivo, FormatoArquivo,<br/>RelatorioDashboard e RelatorioEmpresarial"

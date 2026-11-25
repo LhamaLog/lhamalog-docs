@@ -1,0 +1,186 @@
+%% DC-10 - módulo 6: Varredura (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 6. Para gerar o SVG: mmdc -i "Varredura.mmd" -o "Varredura.svg"
+classDiagram
+    direction LR
+    class Varredura {
+        -uuid id
+        -uuid owner_id
+        -uuid company_id
+        -uuid product_id
+        -VarreduraStatus status
+        -int num_arquivos_processed
+        -int num_arquivos_with_errors
+        -timestamp created_at
+        -timestamp started_at
+        -timestamp finished_at
+        -uuid agendamento_id
+        -VarreduraTrigger trigger
+        -timestamp snapshot_at
+        +enqueueArquivos(String[] arquivos)
+        +startVarredura()
+        +finishVarredura()
+        +getResume() VarreduraResumo
+        +takeSnapshot(timestamp snapshot_at) Arquivo[]
+        +prioritizeArquivos(Arquivo[] arquivos) Arquivo[]
+        +publishFilaOrdenada() FilaOrdenada
+    }
+    class VarreduraStatus {
+        <<enumeration>>
+        SCHEDULED
+        PROCESSING
+        COMPLETED
+        COMPLETED_WITH_ERROR
+        FAILED
+    }
+    class VarreduraTrigger {
+        <<enumeration>>
+        SCHEDULED
+        QUEUE_SIZE
+        FORCED
+    }
+    class VarreduraResumo {
+        <<record>>
+        UUID varreduraId
+        VarreduraStatus status
+        int totalArquivos
+        int arquivosProcessados
+        int arquivosEmProcessamento
+        int arquivosPendentes
+        int arquivosComErro
+    }
+    class ArquivoVarredura {
+        -uuid id
+        -uuid varredura_id
+        -uuid arquivo_id
+        -ArquivoScanStatus status
+        -int order
+        -int attempts
+        -timestamp created_at
+        -timestamp started_at
+        -timestamp finished_at
+        -string error
+        -NivelPrioridade prioridade
+        -int max_attempts
+        +startScan()
+        +retryScan(String error)
+        +finishScan()
+    }
+    class ArquivoScanStatus {
+        <<enumeration>>
+        PENDING
+        PROCESSING
+        COMPLETED
+        ERROR
+        FAILED
+    }
+    class AgendamentoVarredura {
+        -uuid id
+        -uuid owner_id
+        -uuid company_id
+        -uuid product_id
+        -AgendamentoVarreduraStatus status
+        -string cron_expression
+        -timestamp next_executor_at
+        -timestamp last_executor_at
+        -timestamp created_at
+        -timestamp updated_at
+        +create(String cron) AgendamentoVarredura
+        +pause()
+        +resume()
+        +cancel()
+        +dispatch() Varredura
+    }
+    class AgendamentoVarreduraStatus {
+        <<enumeration>>
+        ACTIVE
+        PAUSE
+        DISABLE
+    }
+    class Modulo {
+        -uuid id
+        -uuid owner_id
+        -uuid company_id
+        -uuid product_id
+        -string service_name
+        -string nome
+        -NivelPrioridade prioridade
+        -bool auto_registered
+        -timestamp created_at
+        -timestamp updated_at
+        +registerFromServiceName(String service_name) Modulo
+        +rename(String nome)
+        +changePrioridade(NivelPrioridade prioridade)
+    }
+    class NivelPrioridade {
+        <<enumeration>>
+        VERY_HIGH
+        HIGH
+        MEDIUM
+        LOW
+        VERY_LOW
+    }
+    class FilaDesordenada {
+        -int limite_disparo
+        +enqueue(uuid arquivo_id)
+        +size() int
+        +snapshot(timestamp snapshot_at) Arquivo[]
+        +requeue(uuid arquivo_id)
+    }
+    class FilaOrdenada {
+        -uuid varredura_id
+        +publish(ArquivoVarredura[] arquivos)
+        +next() ArquivoVarredura
+        +isEmpty() bool
+    }
+    class TravaVarredura {
+        -uuid id
+        -uuid owner_id
+        -uuid product_id
+        -uuid varredura_id
+        -timestamp acquired_at
+        -timestamp expires_at
+        +acquire(uuid varredura_id) bool
+        +release()
+    }
+    class HistoricoVarredura {
+        <<sem aba>>
+        -varreduraId
+        -produto
+        -gatilho
+        -arquivos
+        -lotes
+        -resultado
+    }
+    class Arquivo {
+        <<Coletor>>
+    }
+    class Trace {
+        <<Coletor>>
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+
+    AgendamentoVarredura "0..1" -- "0..*" Varredura : dispara
+    AgendamentoVarredura ..> Varredura : dispatch
+    Varredura "1" -- "0..*" ArquivoVarredura : processa
+    ArquivoVarredura --> Arquivo : arquivo_id
+    FilaDesordenada o-- Arquivo : pendentes
+    Produto "1" -- "1" FilaDesordenada : uma fila por Produto
+    Varredura ..> FilaDesordenada : takeSnapshot
+    Varredura ..> FilaOrdenada : publishFilaOrdenada
+    FilaOrdenada o-- ArquivoVarredura
+    Varredura ..> TravaVarredura : acquire / release
+    Varredura ..> HistoricoVarredura : registra cada execucao
+    Varredura ..> VarreduraResumo : getResume
+    Varredura ..> Arquivo : takeSnapshot / prioritizeArquivos
+    VarreduraResumo --> VarreduraStatus
+    Trace "0..*" -- "1..*" Modulo : service.name
+    Modulo --> Produto : product_id
+    Modulo --> NivelPrioridade
+    Trace --> NivelPrioridade
+    ArquivoVarredura --> NivelPrioridade
+    Varredura --> VarreduraStatus
+    Varredura --> VarreduraTrigger
+    ArquivoVarredura --> ArquivoScanStatus
+    AgendamentoVarredura --> AgendamentoVarreduraStatus

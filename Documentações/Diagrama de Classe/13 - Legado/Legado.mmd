@@ -1,0 +1,194 @@
+%% DC-10 - módulo 13: Legado (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 13. Para gerar o SVG: mmdc -i "Legado.mmd" -o "Legado.svg"
+classDiagram
+    direction LR
+    class LogSDK {
+        <<legado>>
+        -ConfiguracaoSdk configuracao
+        -ClienteColetor cliente_coletor
+        -ValidadorEventoLog validador
+        -RedatorDadosSensiveis redator
+        +criarConfiguracao() ConfiguracaoSdk
+        +registrarEvento() ResultadoEnvio
+        +registrarTodos() List~ResultadoEnvio~
+        +testarConexao() ResultadoConexao
+        +fechar() void
+    }
+    class ConfiguracaoSdk {
+        <<legado>>
+        -URI destino_coletor
+        -IdentificadorProduto produto_id
+        -CredencialIngestao credencial
+        -Duration timeout
+        -Map~String,String~ metadados_fixos
+        +builder() ConfiguracaoSdk.Builder
+        +validar() ResultadoValidacao
+        +cofigMetadado() ConfiguracaoSdk
+    }
+    class CredencialIngestao {
+        <<legado>>
+        -String token
+        +estaPresente() boolean
+        +copiaSegura() String
+        +limpar() void
+    }
+    class IdentificadorProduto {
+        <<legado>>
+        -String valor
+        +identificarProduito() IdentificadorProduto
+        +estaValido() boolean
+    }
+    class EventoLog {
+        <<legado>>
+        -Instant ocorrido_em
+        -String mensagem
+        -String origem
+        -String nivel_informado
+        -Map~String,Object~ atributos
+        -String correlacao
+        +criarEvento() EventoLog
+        +builder() EventoLog
+        +adicionarAtributo() EventoLog
+        +comCorrelacao() EventoLog
+    }
+    class EnvelopeIngestao {
+        <<legado>>
+        -String requisicao_id
+        -IdentificadorProduto produto_id
+        -Instant capturado_em
+        -EventoLog evento
+        -String versao_sdk
+        -String checksum
+        +criar() EnvelopeIngestao
+        +calcularChecksum() String
+    }
+    class ClienteColetor {
+        <<interface>>
+        +transmitir() RespostaColetor
+        +testarConexao() ResultadoConexao
+        +fechar() void
+    }
+    class SerializadorIngestao {
+        <<interface>>
+        +serializar() byte[]
+        +tipoConteudo() String
+        +versaoFormato() String
+    }
+    class ValidadorEventoLog {
+        <<legado>>
+        +validar() ResultadoValidacao
+        +validarAtributos() ResultadoValidacao
+    }
+    class ResultadoValidacao {
+        <<legado>>
+        -boolean valido
+        -List~String~ violacoes
+        +sucesso() ResultadoValidacao
+        +falha() ResultadoValidacao
+        +estaValido() boolean
+    }
+    class RedatorDadosSensiveis {
+        <<interface>>
+        +redigir(EventoLog evento) EventoLog
+        +redigirValor(String chave, Object valor) Object
+    }
+    class RespostaColetor {
+        <<legado>>
+        -boolean aceita
+        -String correlacao
+        -String codigo
+        -String mensagem_segura
+        +foiAceita() boolean
+        +podeSerReenviada() boolean
+    }
+    class ResultadoEnvio {
+        <<legado>>
+        -String status
+        -String requisicao_id
+        -String mensagem_segura
+        -Throwable causa
+        +sucesso() boolean
+        +falhaTemporaria() boolean
+        +falhaDefinitiva() boolean
+    }
+    class ResultadoConexao {
+        <<legado>>
+        -boolean conectado
+        -boolean autenticado
+        -String mensagem_segura
+        +estaPronto() boolean
+    }
+    class Executavel {
+        <<substituida>>
+        -UUID executavel_id
+        -UUID produto_id
+        -UUID token_id
+        -String nome
+        -String pasta_monitorada
+        -String periodicidade_cron
+        -String versao
+        -SistemaOperacional sistema_operacional
+        -StatusExecutavel status
+        -Integer total_arquivos_enviados
+        -String ultima_mensagem_erro
+        -DateTime data_instalacao
+        -DateTime ultima_atividade
+        +Executavel(produto_id, token_id, pasta_monitorada, periodicidade_cron, nome_amigavel)
+        +iniciarVarredura() void
+        +pararVarredura() void
+        +estaConectado() Boolean
+    }
+    class SistemaOperacional {
+        <<enumeration>>
+        WINDOWS
+        LINUX
+        MACOS
+    }
+    class StatusExecutavel {
+        <<enumeration>>
+        PENDENTE_CONFIGURACAO
+        ATIVO
+        PARADO
+        DESCONECTADO
+    }
+    class FonteTelemetria {
+        <<sem aba>>
+        -UUID id
+        -String nome
+        -String tipo
+        -String ambiente
+        -String serviceName
+        -String namespace
+        -String status
+        -DateTime ultimaComunicacao
+    }
+    class Coletor {
+        <<Coletor>>
+    }
+    class Produto {
+        <<TenantMembroProduto>>
+    }
+
+    LogSDK --> ConfiguracaoSdk
+    LogSDK --> ClienteColetor
+    LogSDK --> ValidadorEventoLog
+    LogSDK --> RedatorDadosSensiveis
+    LogSDK ..> EventoLog : registrarEvento
+    LogSDK ..> ResultadoEnvio
+    LogSDK ..> ResultadoConexao
+    ConfiguracaoSdk --> IdentificadorProduto : produto_id
+    ConfiguracaoSdk --> CredencialIngestao : credencial
+    ConfiguracaoSdk ..> ResultadoValidacao
+    EnvelopeIngestao --> IdentificadorProduto
+    EnvelopeIngestao --> EventoLog
+    SerializadorIngestao ..> EnvelopeIngestao : serializa
+    ValidadorEventoLog ..> ResultadoValidacao
+    RedatorDadosSensiveis ..> EventoLog : redigir
+    ClienteColetor ..> RespostaColetor
+    ClienteColetor ..> ResultadoConexao
+    ClienteColetor ..> Coletor : transmite
+    IdentificadorProduto ..> Produto
+    Executavel --> Produto : produto_id
+    Executavel ..> FonteTelemetria : substituida por
+    Executavel --> SistemaOperacional
+    Executavel --> StatusExecutavel

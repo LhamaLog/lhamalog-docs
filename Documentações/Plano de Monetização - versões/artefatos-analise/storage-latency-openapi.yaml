@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: LhamaLog Core — Teste de latência de storage
+  version: 0.1.0
+  description: Resultados medidos pelo navegador ou collector do cliente; recomendação = menor p50, desempate por custo.
+paths:
+  /api/v1/storage/probe-targets:
+    get:
+      summary: Lista os objetos de teste (um por região candidata)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ProbeTarget" } }
+  /api/v1/tenants/{tenantId}/storage/latency-tests:
+    parameters:
+      - { name: tenantId, in: path, required: true, schema: { type: string } }
+    post:
+      summary: Registra um teste de latência (browser ou collector)
+      security: [ { clerk: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LatencyTestPayload" }
+      responses:
+        "201":
+          description: Registrado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LatencyTestCreated" }
+        "400": { description: Payload inválido (ex. menos de 5 amostras válidas em todos os alvos) }
+        "403": { description: Usuário não pertence ao tenant }
+        "429": { description: Rate limit (ex. 10 testes/hora por tenant) }
+    get:
+      summary: Lista os últimos testes do tenant
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, default: 10, maximum: 50 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/LatencyTestCreated" } }
+  /api/v1/tenants/{tenantId}/storage/recommendation:
+    parameters:
+      - { name: tenantId, in: path, required: true, schema: { type: string } }
+    get:
+      summary: Recomendação baseada no teste mais recente (ou testId)
+      parameters:
+        - { name: testId, in: query, required: false, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StorageRecommendation" }
+        "404": { description: Nenhum teste válido ainda }
+components:
+  securitySchemes:
+    clerk: { type: http, scheme: bearer, bearerFormat: JWT }
+  schemas:
+    ProviderId: { type: string, enum: [magalu, oci, aws] }
+    ProbeTarget:
+      type: object
+      required: [provider, region, url]
+      properties:
+        provider: { $ref: "#/components/schemas/ProviderId" }
+        region: { type: string, example: br-se1 }
+        url: { type: string, format: uri }
+    ProbeResult:
+      type: object
+      required: [provider, region, samplesMs, failures]
+      properties:
+        provider: { $ref: "#/components/schemas/ProviderId" }
+        region: { type: string }
+        url: { type: string, format: uri }
+        samplesMs: { type: array, maxItems: 20, items: { type: number, minimum: 0, maximum: 10000 } }
+        failures: { type: integer, minimum: 0 }
+        p50Ms: { type: [number, "null"] }
+        p90Ms: { type: [number, "null"] }
+        minMs: { type: [number, "null"] }
+        jitterMs: { type: [number, "null"] }
+        timingSource: { type: string, enum: [resource-timing, performance-now, collector-httptrace] }
+    LatencyTestPayload:
+      type: object
+      required: [source, startedAt, finishedAt, samplesPerTarget, results]
+      properties:
+        source: { type: string, enum: [browser, collector] }
+        startedAt: { type: string, format: date-time }
+        finishedAt: { type: string, format: date-time }
+        samplesPerTarget: { type: integer, minimum: 5, maximum: 10 }
+        client:
+          type: object
+          properties:
+            userAgent: { type: string }
+            connection: { type: string }
+            timezone: { type: string }
+            collectorId: { type: string }
+        results: { type: array, minItems: 1, maxItems: 10, items: { $ref: "#/components/schemas/ProbeResult" } }
+    LatencyTestCreated:
+      type: object
+      properties:
+        testId: { type: string }
+        tenantId: { type: string }
+        source: { type: string }
+        createdAt: { type: string, format: date-time }
+        results: { type: array, items: { $ref: "#/components/schemas/ProbeResult" } }
+    RankedOption:
+      type: object
+      properties:
+        provider: { $ref: "#/components/schemas/ProviderId" }
+        region: { type: string }
+        p50Ms: { type: number }
+        p90Ms: { type: number }
+        successRate: { type: number }
+        storagePricePerGbMonthBrl: { type: number }
+        tiedWithBest: { type: boolean }
+    StorageRecommendation:
+      type: object
+      properties:
+        testId: { type: string }
+        recommended: { $ref: "#/components/schemas/RankedOption" }
+        ranking: { type: array, items: { $ref: "#/components/schemas/RankedOption" } }
+        criterion: { type: string, example: "menor p50; empate (≤10% ou ≤15 ms) desempatado pelo menor R$/GB-mês" }
+        advisory: { type: boolean, example: true }
+        measuredFrom: { type: string, enum: [browser, collector] }

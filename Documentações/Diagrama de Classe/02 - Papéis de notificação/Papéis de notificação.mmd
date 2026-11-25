@@ -1,0 +1,37 @@
+%% DC-10 - módulo 2: Papéis de notificação — matriz de alertas (LhamaLog)
+%% Fonte: DC-10-diagrama-de-classes.md, seção 2. Para gerar o SVG: mmdc -i "Papéis de notificação.mmd" -o "Papéis de notificação.svg"
+classDiagram
+    direction LR
+    class PapelNotificacao {
+        <<sem aba>>
+        -string papelNotificacaoId
+        -string tenantId
+        -string nome
+        -boolean padrao
+        -boolean imutavel
+        -boolean excluido
+        -date excluidoEm
+    }
+    class PapelSeveridade {
+        <<sem aba>>
+        -string tenantId
+        -string papelNotificacaoId
+        -string gravidade
+    }
+    class PapelTipoAlerta {
+        <<sem aba>>
+        -string tenantId
+        -string papelNotificacaoId
+        -string tipoAlerta
+    }
+    class Tenant {
+        <<TenantMembroProduto>>
+    }
+    class Membro {
+        <<TenantMembroProduto>>
+    }
+
+    Tenant "1" -- "0..*" PapelNotificacao : define
+    PapelNotificacao "1" -- "1..*" PapelSeveridade : gravidades
+    PapelNotificacao "1" -- "1..*" PapelTipoAlerta : tipos de alerta
+    Membro "0..*" -- "0..*" PapelNotificacao : participa

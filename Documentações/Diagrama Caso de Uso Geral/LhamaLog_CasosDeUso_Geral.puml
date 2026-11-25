@@ -1,0 +1,351 @@
+@startuml LhamaLog_CasosDeUso_Geral
+left to right direction
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam actorStyle stickman
+skinparam linetype ortho
+
+skinparam usecase {
+  BackgroundColor #EBF8FF
+  BorderColor #005A9C
+}
+
+skinparam package {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+}
+
+skinparam note {
+  BackgroundColor #FFFDE7
+  BorderColor #999999
+}
+
+' ============================================================
+' ATORES
+' ============================================================
+
+actor "Usuário do Sistema" as Usuario
+actor Gestor
+actor Sistema
+
+actor "Sistema Terceiro de\nAssinatura/Pagamento" as SistemaPagamento
+
+actor "Módulo de Controle de Lotes\n(Batch Controller)" as BatchController
+actor "Módulo de Ingestão" as ModuloIngestao
+actor "Módulo de Segurança" as ModuloSeguranca
+actor "Módulo de Roteamento\n(Dispatcher)" as Dispatcher
+actor "Módulo de Relatórios" as ModuloRelatorios
+actor "Módulo Agendador\n(Scheduler)" as Scheduler
+
+actor "Gateway de Pagamento" as Gateway
+actor "Serviço de Autenticação" as ServicoAutenticacao
+
+
+' ============================================================
+' CASOS DE USO DO USUÁRIO
+' ============================================================
+
+package "Casos de Uso do Usuário (USID)" as PktUserStories {
+
+  package "Ocorrência" as PktOcorrencia {
+    usecase "Visualizar Ocorrências Processados" as USID_001
+    usecase "Consultar Ocorrência" as USID_002
+    usecase "Marcar Ocorrência" as USID_003
+    usecase "Arquivar Ocorrência" as USID_004
+    usecase "Filtrar Ocorrência" as USID_005
+    usecase "Importar Arquivo" as USID_006
+    usecase "Consultar Arquivos Processados" as USID_007
+    usecase "Configurar Periodo de Retenção de Arquivos" as USID_008
+  }
+
+  package "Notificação" as PktNotificacao {
+    usecase "Receber Notificação Email" as USID_009
+    usecase "Receber Notificação Push" as USID_010
+    usecase "Receber Notificação Web" as USID_011
+    usecase "Configurar recepção de notificação" as USID_012
+    usecase "Visualizar Notificação" as USID_013
+    usecase "Visualizar Notificação (Mobile)" as USID_014
+  }
+
+  package "SDK e Executável" as PktSDK {
+    usecase "Implementar SDK" as USID_015
+    usecase "Gerenciar Tokens" as USID_016
+    usecase "Baixar SDK" as USID_017
+    usecase "Baixar Executável" as USID_018
+    usecase "Configurar Executável" as USID_019
+    usecase "Iniciar Execução" as USID_020
+  }
+
+  package "Empresa e Produto" as PktEmpresaProduto {
+    usecase "Manter Informações Empresarial" as USID_021
+    usecase "Manter Contexto de atuação empresarial" as USID_022
+    usecase "Manter Contexto de Produto" as USID_023
+    usecase "Implementar Produto" as USID_024
+  }
+
+  package "Varredura" as PktVarredura {
+    usecase "Forçar execução de Varredura" as USID_025
+    usecase "Configurar Agendamento de Varredura" as USID_026
+    usecase "Habilitar Varredura Avançada" as USID_027
+    usecase "Abrir o link do Agente LLM" as USID_028
+  }
+
+  package "Gestão de Acesso" as PktGestaoAcesso {
+    usecase "Manter Gestor" as USID_029
+    usecase "Controle de Acesso dos gestores aos Produtos" as USID_030
+  }
+
+  package "Dashboard e Relatório" as PktDashboard {
+    usecase "Visualizar Dashboard" as USID_031
+    usecase "Filtrar Dashboard" as USID_032
+    usecase "Exportar Relatório" as USID_033
+    usecase "Visualizar Dashboard Empresarial" as USID_034
+    usecase "Exportar Relatório Empresarial" as USID_035
+    usecase "Filtrar Dashboard Empresarial" as USID_036
+    usecase "Filtrar Ocorrências Empresarial (Multi-Produto)" as USID_037
+    usecase "Visualizar Dashboard (Mobile)" as USID_038
+  }
+
+  package "Assinatura" as PktAssinatura {
+    usecase "Visualizar Assinatura" as USID_039
+    usecase "Contratar Assinatura" as USID_040
+    usecase "Alterar Assinatura" as USID_041
+    usecase "Cancelar Assinatura" as USID_042
+    usecase "Reembolsar Assinatura" as USID_043
+  }
+
+  package "Sugestão" as PktSugestao {
+    usecase "Solicitar Sugestão" as USID_044
+    usecase "Visualizar Sugestão" as USID_045
+    usecase "Avaliar Sugestão" as USID_046
+    usecase "Fechar Sugestão" as USID_047
+  }
+
+  package "Autenticação" as PktAutenticacao {
+    usecase "Manter Usuário" as USID_048
+    usecase "Logar na Web" as USID_049
+    usecase "Logar Mobile" as USID_050
+    usecase "Manter 2FA" as USID_051
+  }
+}
+
+
+' ============================================================
+' INTEGRAÇÕES DO SISTEMA
+' ============================================================
+
+package "Integrações do Sistema (SSID)" as PktIntegracoes {
+
+  package "Integração - Coletor" as PktColetor {
+    usecase "Conectar o Utilitário" as SSID_001
+    usecase "Manter Logs" as SSID_002
+    usecase "Enfileirar Logs" as SSID_003
+    usecase "Executar Varredura (Forçar Varredura)" as SSID_005
+    usecase "Executar Varredura Agendada" as SSID_006
+    usecase "Criar Agendamento de Varredura" as SSID_012
+    usecase "Enviar Arquivo (Importado) para Varredura" as SSID_013
+    usecase "Manter Tokens de Conexão" as SSID_014
+  }
+
+  package "Integração - Finder" as PktFinder {
+    usecase "Marcar como Analisado" as SSID_004
+    usecase "Identificar Ocorrência" as SSID_007
+    usecase "Executar Varredura Avançada" as SSID_008
+    usecase "Enviar Ocorrências" as SSID_009
+    usecase "Registrar Ocorrência" as SSID_010
+    usecase "Usar Contexto" as SSID_015
+  }
+
+  package "Integração - Gateway de Pagamento" as PktGateway {
+    usecase "Manter Assinatura" as SSID_016
+    usecase "Integração de Pagamento" as SSID_018
+  }
+
+  package "Integração - Serviços Externos" as PktServExt {
+    usecase "Integração de Autenticação" as SSID_017
+    usecase "Integração de Notificação" as SSID_019
+    usecase "Integração de LLM" as SSID_020
+  }
+
+  package "Integração - Relatórios" as PktSsidUsuario {
+    usecase "Gerar Relatórios" as SSID_011
+  }
+}
+
+
+' ============================================================
+' RELACIONAMENTOS DOS ATORES
+' ============================================================
+
+' ------------------------------------------------------------
+' USUÁRIO
+' Possui relacionamento com TODOS os UCs destes pacotes.
+' Portanto, usamos uma única seta para cada pacote.
+' ------------------------------------------------------------
+
+Usuario --> PktOcorrencia
+Usuario --> PktNotificacao
+Usuario --> PktSDK
+Usuario --> PktEmpresaProduto
+Usuario --> PktVarredura
+Usuario --> PktGestaoAcesso
+Usuario --> PktDashboard
+Usuario --> PktAssinatura
+Usuario --> PktSugestao
+Usuario --> PktAutenticacao
+
+
+' Usuário em integrações específicas
+Usuario --> SSID_002
+Usuario --> SSID_005
+
+
+' ------------------------------------------------------------
+' GESTOR
+' Relaciona-se somente com USID_002 até USID_007 e USID_008.
+' Como não cobre todos os UCs do pacote Ocorrência,
+' as associações são individuais.
+' ------------------------------------------------------------
+
+Gestor --> USID_002
+Gestor --> USID_003
+Gestor --> USID_004
+Gestor --> USID_005
+Gestor --> USID_006
+Gestor --> USID_007
+Gestor --> USID_008
+
+
+' ------------------------------------------------------------
+' SISTEMA
+' Relacionamentos individuais, pois não cobre todos os UCs
+' de nenhum dos pacotes.
+' ------------------------------------------------------------
+
+Sistema --> SSID_001
+Sistema --> SSID_002
+Sistema --> SSID_003
+Sistema --> SSID_005
+Sistema --> SSID_006
+Sistema --> SSID_013
+Sistema --> SSID_014
+Sistema --> SSID_015
+Sistema --> SSID_019
+Sistema --> SSID_020
+
+
+' ------------------------------------------------------------
+' SISTEMA TERCEIRO DE ASSINATURA/PAGAMENTO
+' Atua somente nos quatro casos de assinatura abaixo.
+' ------------------------------------------------------------
+
+SistemaPagamento --> USID_040
+SistemaPagamento --> USID_041
+SistemaPagamento --> USID_042
+SistemaPagamento --> USID_043
+
+
+' ------------------------------------------------------------
+' GATEWAY DE PAGAMENTO
+' Atua em TODOS os UCs do pacote "Integração - Gateway
+' de Pagamento", portanto uma única seta para o pacote.
+' ------------------------------------------------------------
+
+Gateway --> PktGateway
+
+
+' ------------------------------------------------------------
+' MÓDULOS INTERNOS
+' Cada um possui relacionamento com apenas um UC.
+' ------------------------------------------------------------
+
+BatchController --> SSID_004
+
+ModuloIngestao --> SSID_007
+ModuloIngestao --> SSID_010
+
+ModuloSeguranca --> SSID_008
+
+Dispatcher --> SSID_009
+
+ModuloRelatorios --> SSID_011
+
+Scheduler --> SSID_012
+
+ServicoAutenticacao --> SSID_017
+
+
+' ============================================================
+' EXTENDS
+' ============================================================
+
+USID_003 ..> USID_002 : <<extend>>
+USID_004 ..> USID_002 : <<extend>>
+USID_005 ..> USID_002 : <<extend>>
+USID_005 ..> USID_007 : <<extend>>
+USID_006 ..> USID_007 : <<extend>>
+
+USID_041 ..> USID_008 : <<extend>>
+USID_041 ..> USID_015 : <<extend>>
+USID_042 ..> USID_041 : <<extend>>
+
+USID_021 ..> USID_022 : <<extend>>
+USID_024 ..> USID_023 : <<extend>>
+
+USID_028 ..> USID_044 : <<extend>>
+
+USID_002 ..> USID_009 : <<extend>>
+USID_002 ..> USID_010 : <<extend>>
+USID_002 ..> USID_011 : <<extend>>
+USID_002 ..> USID_013 : <<extend>>
+USID_002 ..> USID_014 : <<extend>>
+
+
+' ============================================================
+' EXTENDS INFERIDOS
+' ============================================================
+
+USID_034 ..> USID_031 : <<extend>> [INFERIDO]
+USID_036 ..> USID_032 : <<extend>> [INFERIDO]
+USID_037 ..> USID_005 : <<extend>> [INFERIDO]
+USID_035 ..> USID_033 : <<extend>> [INFERIDO]
+
+
+' ============================================================
+' INCLUDES
+' ============================================================
+
+SSID_007 ..> SSID_009 : <<include>>
+
+USID_040 ..> SSID_018 : <<include>>
+USID_041 ..> SSID_018 : <<include>>
+USID_042 ..> SSID_018 : <<include>>
+USID_043 ..> SSID_018 : <<include>>
+
+
+' ============================================================
+' DISCLAIMER
+' ============================================================
+
+note bottom of PktUserStories
+
+<b>DISCLAIMER — SIMPLIFICAÇÃO VISUAL DOS RELACIONAMENTOS</b>
+
+Para evitar a poluição visual do diagrama, quando um ator possui
+relacionamento com TODOS os casos de uso contidos em um mesmo
+pacote, foi utilizada uma única seta apontando para o pacote.
+
+A seta para o pacote representa, portanto, os relacionamentos
+do ator com todos os casos de uso internos daquele pacote.
+
+Quando o ator possui relacionamento apenas com parte dos casos
+de uso de um pacote, as associações são representadas
+individualmente para cada caso de uso.
+
+Esta é uma simplificação exclusivamente visual e não altera
+os relacionamentos definidos na especificação dos casos de uso.
+
+end note
+
+@enduml
